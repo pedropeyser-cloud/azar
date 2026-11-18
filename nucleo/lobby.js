@@ -1,0 +1,206 @@
+// Inicio de AZAR (identidad «Eclipse», etapa 4, 2026-11-18). A pantalla completa en compu y celular, sin scroll:
+//   arriba la marca, «Jugar» y «Vos», el sonido, la pantalla completa y tu luna;
+//   el cielo con el eclipse (nucleo/cielo.js) detrás del saludo; las cuatro barajas sobre el mostrador con la franja de luz;
+//   «Seguir» (tu última partida con un amigo) abajo; la columna «Amigos» a la derecha (abajo en el celular).
+// «Vos» es un panel encima: entrar con Google, elegir usuario, historial, cerrar sesión o borrar la cuenta.
+// AZAR no tiene tienda: lo que se consigue con la gloria vive solo adentro del truco y se llama «Tienda».
+import { JUEGOS, juegoPorId } from "./registro.js";
+import * as nube from "./nube.js";
+import { ambiente } from "./ambiente.js";
+import { anclar, abrirCielo, destello } from "./cielo.js";
+import * as pantalla from "./pantalla.js";
+
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+// Signos de las barajas: trazo fino, como en la maqueta de la identidad.
+const PALO = {
+  espada: `<path d="M32 6v40M24 46h16M32 46v10M28 56h8"/><path d="M29 12l3-6 3 6"/>`,
+  oro: `<circle cx="32" cy="32" r="16"/><circle cx="32" cy="32" r="8"/>`,
+  copa: `<path d="M20 12h24c0 12-5 20-12 20s-12-8-12-20zM32 32v14M24 52h16M27 46h10"/>`,
+  basto: `<path d="M30 8c6 6-4 12 2 18s-6 10 0 16 -4 10 2 14"/><path d="M27 20l8-3M26 34l9-2"/>`,
+};
+const signo = (p) => `<svg class="signo" viewBox="0 0 64 64" aria-hidden="true">${PALO[p] || PALO.oro}</svg>`;
+const MEDIALUNA = `<svg class="medialuna" viewBox="0 0 32 32" aria-hidden="true"><path d="M21 4.5A12.5 12.5 0 1 0 27.5 21 10 10 0 1 1 21 4.5z"/></svg>`;
+const ICO_SONIDO = (on) => `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3.5L12 6v12l-4.5-3.5H4z"/>${on ? '<path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11"/>' : '<path d="M16 9.5l5 5M21 9.5l-5 5"/>'}</svg>`;
+
+// La fase de la luna dice dónde está cada amigo (las personas son lunas; los bots, soles).
+const FASE = {
+  juega: { txt: "jugando", luna: `<circle cx="7" cy="7" r="6" fill="#E9B54A"/>` },
+  on: { txt: "en AZAR", luna: `<circle cx="7" cy="7" r="6" fill="#C7CCE4"/><circle cx="10" cy="5" r="5" fill="#121629"/>` },
+  rec: { txt: "pasó hoy", luna: `<circle cx="7" cy="7" r="5.4" fill="none" stroke="#8A90AE" stroke-width="1.2"/>` },
+};
+const fase = (e) => `<svg class="fase" viewBox="0 0 14 14" aria-hidden="true">${(FASE[e] || FASE.rec).luna}</svg>`;
+const luna = (nombre, e) => `<span class="luna">${esc(String(nombre || "?").slice(0, 1).toUpperCase())}${e ? fase(e) : ""}</span>`;
+
+function saludoHora() {
+  const h = new Date().getHours();
+  return h < 6 ? "Buenas noches" : h < 13 ? "Buen día" : h < 20 ? "Buenas tardes" : "Buenas noches";
+}
+
+export function montarLobby(app, { abrirJuego, tab: tabInicial = "jugar" }) {
+  let vos = tabInicial === "vos", aviso = "", cargando = false, partidas = null, confirmarBorrado = false;
+  let amigos = null, vivo = true, conectadosAntes = new Set(), sondeo = null;
+
+  function toast(txt) { aviso = txt; pintarAviso(); setTimeout(() => { if (aviso === txt) { aviso = ""; pintarAviso(); } }, 3500); }
+  function pintarAviso() { const t = app.querySelector(".toast"); if (t) { t.textContent = aviso; t.hidden = !aviso; } }
+
+  // ---------- partes ----------
+  function nav() {
+    const p = nube.miPerfil();
+    return `<header class="az-nav">
+      <span class="marca">${MEDIALUNA}<span>AZAR</span></span>
+      <nav class="pestanas" aria-label="Secciones"><button data-tab="jugar" aria-current="${!vos}">Jugar</button><button data-tab="vos" aria-current="${vos}">Vos</button></nav>
+      <div class="nav-der">
+        <button class="ico-btn" data-accion="sonido" aria-pressed="${ambiente.encendido}" aria-label="Sonido de ambiente" title="Sonido de ambiente">${ICO_SONIDO(ambiente.encendido)}</button>
+        ${pantalla.sePuede() ? `<button class="ico-btn" data-accion="pantalla" aria-label="Pantalla completa" title="Pantalla completa">${pantalla.iconoPantalla()}</button>` : ""}
+        <button class="yo" data-tab="vos" aria-label="${p ? esc(p.usuario) : "Entrar"}">${p ? luna(p.usuario, "on") : `<span class="luna vacia"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="7"/></svg></span>`}</button>
+      </div></header>`;
+  }
+
+  function saludo() {
+    const p = nube.miPerfil();
+    const n = (amigos || []).filter((a) => a.estado === "juega" || a.estado === "on").length;
+    const quien = p ? esc(p.usuario) : "";
+    return `${saludoHora()}${quien ? ", " + quien : ""}${n ? ` · ${n} ${n === 1 ? "amigo" : "amigos"} en AZAR` : ""}`;
+  }
+
+  function barajas() {
+    return JUEGOS.map((j) => `<button class="baraja" data-juego="${j.id}" aria-label="${esc(j.nombre)}, ${esc(j.cuantos)}">
+        ${signo(j.palo)}<b>${esc(j.nombre)}</b><small>${esc(j.cuantos)}</small><span class="vivo">${esc(j.lema)}</span></button>`).join("")
+      + `<div class="baraja vacia" aria-hidden="true"><small>próximo juego</small></div>`;
+  }
+
+  function seguir() {
+    const u = (partidas || [])[0];
+    if (!u) return "";
+    const j = juegoPorId(u.partidas_juego?.juego);
+    if (!j) return "";
+    return `<div class="seguir">${signo(j.palo)}<div><small>Tu última · ${u.gano ? "ganaste" : "perdiste"}</small><b>${esc(j.nombre)} con un amigo</b></div>
+      <button class="btn prim chico" data-juego="${j.id}">${u.gano ? "Otra" : "Revancha"}</button></div>`;
+  }
+
+  function columnaAmigos() {
+    const p = nube.miPerfil();
+    let cuerpo;
+    if (!nube.activa()) cuerpo = `<p class="nota">Las cuentas no están activadas en esta copia. Podés jugar igual contra los bots y con amigos por link.</p>`;
+    else if (!p) cuerpo = `<p class="nota">Entrá con Google y vas a ver acá quién está en AZAR y quién está jugando.</p><button class="btn sec" data-tab="vos">Entrar</button>`;
+    else if (amigos === null) cuerpo = `<p class="nota">Buscando a tus amigos…</p>`;
+    else if (!amigos.length) cuerpo = `<p class="nota">Todavía no sumaste amigos. Se suman desde el truco: Jugar → Tus amigos, con tu link de amigo.</p>`;
+    else {
+      const grupo = (t, lista) => (lista.length ? `<span class="grupo-t">${t}</span>${lista.map((a) => `<div class="amigo">${luna(a.usuario, a.estado)}<div><b>${esc(a.usuario)}</b><small class="${a.estado === "juega" ? "j" : ""}">${FASE[a.estado]?.txt || "hace rato"}</small></div></div>`).join("")}` : "");
+      cuerpo = grupo("Jugando", amigos.filter((a) => a.estado === "juega")) + grupo("En AZAR", amigos.filter((a) => a.estado === "on"))
+        + grupo("Pasaron hoy", amigos.filter((a) => a.estado === "rec")) + grupo("Sin conectarse hoy", amigos.filter((a) => a.estado === "off"));
+    }
+    return `<aside class="amigos" aria-label="Amigos"><h2>Amigos</h2><div class="amigos-lista">${cuerpo}</div>
+      <div class="leyenda"><span>${fase("juega")} jugando</span><span>${fase("on")} en AZAR</span><span>${fase("rec")} pasó hoy</span></div></aside>`;
+  }
+
+  const legal = () => `<p class="legal"><a href="terminos.html" target="_blank" rel="noopener">Términos</a> · <a href="privacidad.html" target="_blank" rel="noopener">Privacidad</a></p>`;
+  function panelVos() {
+    const p = nube.miPerfil(), u = nube.miUsuario();
+    let c;
+    if (!nube.activa()) c = `<p class="nota">Las cuentas todavía no están activadas en esta copia. Podés jugar igual contra los bots y con amigos por link.</p>`;
+    else if (!u) c = `<h2>Tu usuario</h2><p class="nota">Entrá con Google para tener tu usuario, tus amigos y tu historial. Es el mismo usuario en todos los juegos de AZAR.</p>
+      <button class="btn prim" data-accion="google">Entrar con Google</button>`;
+    else if (!p) c = `<h2>Elegí tu usuario</h2><p class="nota">De 3 a 16 letras o números, sin espacios. Es el que ven los demás.</p>
+      <input class="campo" id="usuario" maxlength="16" autocomplete="off" aria-label="Usuario"><button class="btn prim" data-accion="crear">Crear usuario</button>`;
+    else c = `<div class="perfil-grande">${luna(p.usuario, "on")}<div><b class="p-nombre">${esc(p.usuario)}</b><small>${Number(p.puntos) || 0} de gloria en el truco</small></div></div>
+      <p class="nota">La gloria es solo del truco, y lo que se consigue con ella está en su Tienda. El Chin, la escoba y la canasta guardan en tu historial las partidas con un amigo cuando los dos confirman el resultado.</p>
+      <h2>Tus últimas partidas</h2>
+      ${partidas === null ? `<p class="nota">Cargando…</p>` : partidas.length ? `<ul class="historial">${partidas.slice(0, 8).map((x) => `<li class="${x.gano ? "gane" : "perdi"}"><b>${esc(juegoPorId(x.partidas_juego?.juego)?.nombre || x.partidas_juego?.juego || "")}</b> ${x.gano ? "ganaste" : "perdiste"}</li>`).join("")}</ul>` : `<p class="nota">Todavía no jugaste ninguna con un amigo.</p>`}
+      <div class="acciones"><button class="btn sec" data-accion="salir">Cerrar sesión</button>
+        ${confirmarBorrado ? `<div class="borrar"><p class="nota">Esto borra tu usuario, tu gloria y tu historial en todo AZAR, también en el truco. No se puede deshacer. Escribí tu usuario para confirmar:</p><input class="campo" id="confirmar" autocomplete="off" aria-label="Escribí tu usuario"><button class="btn peligro" data-accion="borrar-ok">Borrar mi cuenta</button><button class="btn suave" data-accion="borrar-no">No, volver</button></div>`
+          : `<button class="btn suave" data-accion="borrar">Borrar mi cuenta</button>`}</div>`;
+    return `<section class="panel-vos" role="dialog" aria-label="Vos" ${vos ? "" : "hidden"}><button class="cerrar-vos" data-tab="jugar" aria-label="Cerrar">×</button>${c}${legal()}</section>`;
+  }
+
+  // ---------- pintar ----------
+  function pintar() {
+    if (!vivo) return;
+    app.innerHTML = `<div class="azar${vos ? " con-vos" : ""}">${nav()}
+      <main class="escena">
+        <div class="cielo-zona" aria-hidden="true"><span class="ancla-eclipse"></span></div>
+        <div class="saludo-bloque"><span class="saludo">${saludo()}</span><h1 class="titular">¿A qué jugamos<br>esta noche?</h1></div>
+        <section class="mostrador" aria-label="Juegos"><div class="barajas">${barajas()}</div><div class="az-franja"></div><div class="az-reflejo"></div></section>
+        ${seguir()}
+      </main>
+      ${columnaAmigos()}${panelVos()}
+      <p class="toast" role="status" ${aviso ? "" : "hidden"}>${esc(aviso)}</p></div>`;
+    anclar(app.querySelector(".ancla-eclipse"), app.querySelector(".az-franja"));
+  }
+  function pintarParte(sel, html) { const v = app.querySelector(sel); if (v) v.outerHTML = html; else pintar(); }
+
+  // ---------- datos ----------
+  async function cargarAmigos() {
+    if (!vivo || !nube.miPerfil()) return;
+    try {
+      const lista = await nube.misAmigos();
+      if (!vivo) return;
+      const ahora = new Set(lista.filter((a) => a.estado === "on" || a.estado === "juega").map((a) => a.id));
+      const llego = amigos !== null && [...ahora].some((id) => !conectadosAntes.has(id));
+      conectadosAntes = ahora; amigos = lista;
+      pintarParte(".amigos", columnaAmigos());
+      const s = app.querySelector(".saludo"); if (s) s.textContent = saludo().replace(/&amp;/g, "&");
+      if (llego) destello();  // un amigo acaba de entrar: anillo de diamante breve
+    } catch { if (amigos === null) { amigos = []; pintarParte(".amigos", columnaAmigos()); } }
+  }
+  async function cargarPartidas() {
+    if (!nube.miPerfil()) { partidas = null; return; }
+    try {
+      const x = await nube.misPartidasJuego(12);
+      partidas = [...x].sort((a, b) => String(b.partidas_juego?.jugada || "").localeCompare(String(a.partidas_juego?.jugada || "")));
+    } catch { partidas = []; }
+    if (vivo) pintar();
+  }
+
+  // ---------- intensidad del sonido: sube al pasar por los juegos y por el eclipse ----------
+  app.onpointerover = (ev) => {
+    if (ev.target.closest(".baraja:not(.vacia)")) ambiente.intensidad(0.9);
+    else if (ev.target.closest(".cielo-zona, .saludo-bloque")) ambiente.intensidad(0.6);
+    else ambiente.reposo();
+  };
+  app.onpointerleave = () => ambiente.reposo();
+  ambiente.mesa(false);
+
+  // ---------- acciones ----------
+  app.onclick = async (ev) => {
+    const t = ev.target.closest("[data-tab],[data-juego],[data-accion]");
+    if (!t || cargando) return;
+    if (t.dataset.tab) {
+      vos = t.dataset.tab === "vos"; confirmarBorrado = false; pintar();
+      if (vos && nube.miPerfil() && partidas === null) cargarPartidas();
+      return;
+    }
+    if (t.dataset.juego) { abrirJuego(t.dataset.juego); return; }
+    const a = t.dataset.accion, p = nube.miPerfil();
+    if (a === "sonido") { const on = ambiente.alternar(); t.setAttribute("aria-pressed", on); t.innerHTML = ICO_SONIDO(on); return; }
+    if (a === "pantalla") { await pantalla.alternar(); t.innerHTML = pantalla.iconoPantalla(); return; }
+    try {
+      cargando = true;
+      if (a === "google") await nube.entrarConGoogle();
+      else if (a === "crear") await nube.crearPerfil(app.querySelector("#usuario").value);  // el historial lo trae el aviso de sesión
+      else if (a === "salir") { await nube.salir(); partidas = null; amigos = null; }
+      else if (a === "borrar") { confirmarBorrado = true; pintar(); }
+      else if (a === "borrar-no") { confirmarBorrado = false; pintar(); }
+      else if (a === "borrar-ok") {
+        if (nube.normalizarUsuario(app.querySelector("#confirmar").value) !== p.usuario) toast("Escribí tu usuario tal cual para confirmar.");
+        else { await nube.borrarMiCuenta(); confirmarBorrado = false; partidas = null; vos = false; toast("Cuenta borrada."); }
+      }
+    } catch (e) { toast(e.message || "Algo salió mal. Probá de nuevo."); }
+    finally { cargando = false; }
+  };
+  const alTecla = (ev) => { if (ev.key === "Escape" && vos) { vos = false; pintar(); } };
+  addEventListener("keydown", alTecla);
+  const alPantalla = () => { const b = app.querySelector('[data-accion="pantalla"]'); if (b) b.innerHTML = pantalla.iconoPantalla(); };
+  document.addEventListener("fullscreenchange", alPantalla);
+
+  nube.on("sesion", () => { if (!vivo) return; amigos = null; partidas = null; pintar(); cargarAmigos(); cargarPartidas(); });
+  pintar();
+  abrirCielo();
+  cargarAmigos(); cargarPartidas();
+  sondeo = setInterval(cargarAmigos, 20000);
+  return () => {
+    vivo = false; clearInterval(sondeo); app.onclick = null; app.onpointerover = null; app.onpointerleave = null;
+    removeEventListener("keydown", alTecla); document.removeEventListener("fullscreenchange", alPantalla);
+  };
+}

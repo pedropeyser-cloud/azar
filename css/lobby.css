@@ -1,0 +1,153 @@
+/* Inicio de AZAR · identidad «Eclipse» (etapa 4). Pantalla completa en 1920×1080, 1366×768 y 390×844, sin scroll.
+   El eclipse es un canvas fijo detrás de todo (nucleo/cielo.js); acá solo va lo que se lee y se toca encima. */
+.cielo { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; display: block; background: var(--bg); }
+.pantalla { z-index: 1; }
+.medidor-fps { position: fixed; z-index: 200; left: 8px; top: 8px; font: 600 12px var(--fb); color: #0A0C16; background: #E9B54A; padding: 4px 8px; border-radius: 8px; pointer-events: none; }
+
+.azar { position: absolute; inset: 0; display: grid; grid-template-columns: minmax(0, 1fr) clamp(250px, 19vw, 330px); grid-template-rows: auto minmax(0, 1fr);
+  grid-template-areas: "nav nav" "escena amigos"; color: var(--fg); font-family: var(--fb); }
+
+/* ---------- barra de arriba ---------- */
+.azar .az-nav { grid-area: nav; display: flex; align-items: center; gap: clamp(16px, 2.4vw, 36px); padding: max(14px, env(safe-area-inset-top)) clamp(16px, 2.6vw, 40px) 10px; position: relative; z-index: 3; }
+.azar .marca { font-family: var(--fd); font-weight: 600; font-size: clamp(21px, 1.7vw, 27px); letter-spacing: .42em; display: flex; align-items: center; gap: 12px; padding-left: 2px; }
+.azar .marca .medialuna { width: 1.25em; height: 1.25em; fill: none; stroke: var(--acc); stroke-width: 1.6; filter: drop-shadow(0 0 6px rgba(233,181,74,.45)); }
+.azar .pestanas { display: flex; gap: 6px; }
+.azar .pestanas button { border: 0; background: none; color: var(--mute); font-size: 14.5px; font-weight: 600; padding: 8px 12px; border-radius: 99px; display: inline-flex; align-items: center; gap: 8px; }
+.azar .pestanas button[aria-current=true] { color: var(--fg); }
+.azar .pestanas button[aria-current=true]::after { content: ""; width: 5px; height: 5px; border-radius: 50%; background: var(--acc); }
+.azar .pestanas button:hover { color: var(--fg); }
+.azar .nav-der { margin-left: auto; display: flex; gap: 10px; align-items: center; }
+.azar .ico-btn { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--line); background: rgba(18,22,41,.5); display: grid; place-items: center; color: var(--acc2); }
+.azar .ico-btn svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.azar .ico-btn[aria-pressed=true] { color: var(--acc); border-color: rgba(233,181,74,.45); }
+.azar .ico-btn:hover { border-color: var(--acc2); }
+.azar .yo { border: 0; background: none; padding: 0; }
+
+/* lunas (personas) */
+.azar .luna { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; position: relative; flex: none; font-weight: 700; font-size: 14px;
+  background: radial-gradient(circle at 38% 32%, #222949, #121629 70%); color: var(--fg); border: 1px solid var(--line); }
+.azar .luna.vacia svg { width: 18px; height: 18px; fill: none; stroke: var(--acc2); stroke-width: 1.4; stroke-dasharray: 2.4 2.6; }
+.azar .luna .fase { position: absolute; right: -2px; bottom: -2px; width: 14px; height: 14px; }
+
+/* ---------- escena: cielo, saludo, mostrador ---------- */
+.azar .escena { grid-area: escena; position: relative; z-index: 2; display: flex; flex-direction: column; min-height: 0; padding: 0 clamp(16px, 4.2vw, 80px) clamp(16px, 2.6vh, 30px); }
+.cielo-zona { flex: 1 1 0; min-height: 40px; position: relative; }
+/* dónde va la luna: el canvas la dibuja con el centro y el radio de este elemento */
+.azar .ancla-eclipse { position: absolute; width: clamp(64px, 9.6vh, 104px); aspect-ratio: 1; left: 62%; top: 30%; transform: translate(-50%, -50%); pointer-events: none; }
+.azar .saludo-bloque { display: grid; gap: clamp(8px, 1.4vh, 14px); margin-bottom: clamp(20px, 4vh, 44px); }
+.azar .saludo { font-size: 12px; letter-spacing: .26em; color: var(--acc2); text-transform: uppercase; font-weight: 600; }
+.azar .titular { font-family: var(--fd); font-weight: 500; font-size: clamp(40px, 5.6vh, 66px); line-height: 1.02; letter-spacing: -.005em; text-shadow: 0 2px 30px rgba(10,12,22,.8); }
+
+.azar .mostrador { position: relative; padding-bottom: 2px; }
+.azar .barajas { display: flex; gap: clamp(12px, 1.4vw, 24px); align-items: flex-end; }
+.azar .baraja { position: relative; width: clamp(128px, 10.6vw, 190px); aspect-ratio: 150 / 214; border-radius: 14px; flex: none;
+  background: linear-gradient(180deg, #1B2140, #10142A); border: 1px solid #3A4270; color: var(--fg); text-align: left;
+  box-shadow: 0 30px 40px -18px rgba(0,0,0,.8), inset 0 1px 0 rgba(255,255,255,.06);
+  display: grid; align-content: end; gap: 3px; padding: clamp(12px, 1vw, 18px); overflow: hidden;
+  transition: transform .35s cubic-bezier(.2,.8,.2,1), border-color .25s, box-shadow .35s; }
+.azar .baraja .signo { position: absolute; left: 50%; top: 38%; transform: translate(-50%, -50%); width: 44%; height: auto; fill: none; stroke: var(--acc2); stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; transition: stroke .25s, filter .35s; }
+.azar .baraja b { font-family: var(--fd); font-size: clamp(22px, 1.6vw, 30px); font-weight: 600; line-height: 1; white-space: nowrap; }
+.azar .baraja small { font-size: 12px; color: var(--mute); }
+.azar .baraja .vivo { font-size: 12px; color: var(--acc); line-height: 1.25; }
+.azar .baraja:not(.vacia):hover, .azar .baraja:not(.vacia):focus-visible { transform: translateY(-10px); border-color: var(--acc);
+  box-shadow: 0 40px 50px -20px rgba(0,0,0,.85), 0 0 0 1px var(--acc), 0 0 46px rgba(233,181,74,.28); outline: none; }
+.azar .baraja:not(.vacia):hover .signo, .azar .baraja:not(.vacia):focus-visible .signo { stroke: var(--acc); filter: drop-shadow(0 0 8px rgba(233,181,74,.6)); }
+.azar .baraja:active { transform: translateY(-4px) scale(.98); }
+.azar .baraja.vacia { width: clamp(70px, 5.6vw, 96px); background: transparent; border-style: dashed; border-color: #2C3354; box-shadow: none; place-items: center; align-content: center; }
+.azar .baraja.vacia small { writing-mode: vertical-rl; transform: rotate(180deg); letter-spacing: .14em; text-transform: uppercase; font-size: 10.5px; }
+.azar .az-franja { height: 1px; margin-top: 0; background: linear-gradient(90deg, transparent, rgba(233,181,74,.9) 18%, #FFE2A0 50%, rgba(233,181,74,.9) 82%, transparent); box-shadow: 0 0 18px 2px rgba(233,181,74,.45); }
+.azar .az-reflejo { height: clamp(28px, 6vh, 70px); background: linear-gradient(180deg, rgba(233,181,74,.08), transparent); margin: 0 3%; }
+
+.azar .seguir { align-self: flex-start; display: flex; gap: 14px; align-items: center; padding: 10px 12px 10px 14px; margin-top: 4px; border-radius: 16px; background: rgba(26,31,56,.6); border: 1px solid var(--line); backdrop-filter: blur(6px); }
+.azar .seguir .signo { width: 30px; height: 30px; fill: none; stroke: var(--acc); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.azar .seguir b { font-family: var(--fd); font-size: 20px; font-weight: 600; display: block; line-height: 1.05; }
+.azar .seguir small { color: var(--mute); font-size: 12px; }
+
+/* ---------- botones de AZAR ---------- */
+.azar .btn { font: 600 14px var(--fb); padding: 10px 18px; min-height: 42px; border: 1px solid var(--line); background: transparent; color: var(--fg); border-radius: 99px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; white-space: nowrap; }
+.azar .btn.prim { background: linear-gradient(180deg, #F2C463, #D99A3A); color: #0A0C16; border-color: #E9B54A; }
+.azar .btn.prim:hover { box-shadow: var(--glow); }
+.azar .btn.sec:hover { border-color: var(--fg); }
+.azar .btn.chico { padding: 6px 14px; min-height: 36px; font-size: 13px; }
+.azar .btn.suave { border-color: transparent; color: var(--mute); }
+.azar .btn.peligro { background: #7a2a22; border-color: #7a2a22; }
+.azar .btn:active { transform: scale(.97); }
+
+/* ---------- columna Amigos ---------- */
+.azar .amigos { grid-area: amigos; position: relative; z-index: 2; margin: 4px clamp(16px, 1.6vw, 28px) clamp(16px, 2.6vh, 28px) 0; border-radius: 18px; min-height: 0;
+  background: linear-gradient(180deg, rgba(26,31,56,.72), rgba(18,22,41,.55)); border: 1px solid rgba(199,204,228,.14); backdrop-filter: blur(8px);
+  padding: 18px; display: flex; flex-direction: column; gap: 10px; }
+.azar .amigos h2 { font-family: var(--fd); font-size: 26px; font-weight: 600; }
+.azar .amigos-lista { flex: 1; min-height: 0; overflow-y: auto; display: grid; align-content: start; gap: 10px; scrollbar-width: thin; }
+.azar .grupo-t { font-size: 10.5px; letter-spacing: .22em; text-transform: uppercase; color: var(--mute); margin-top: 6px; }
+.azar .amigo { display: grid; grid-template-columns: 40px 1fr; gap: 10px; align-items: center; }
+.azar .amigo b { font-size: 14px; font-weight: 600; display: block; line-height: 1.2; }
+.azar .amigo small { font-size: 12px; color: var(--mute); display: block; }
+.azar .amigo small.j { color: var(--acc); }
+.azar .leyenda { display: flex; gap: 12px; flex-wrap: wrap; font-size: 11px; color: var(--mute); border-top: 1px solid var(--line); padding-top: 10px; }
+.azar .leyenda span { display: inline-flex; gap: 5px; align-items: center; } .leyenda .fase { width: 13px; height: 13px; }
+.azar .nota { color: var(--acc2); line-height: 1.5; font-size: 14px; }
+
+/* ---------- panel Vos ---------- */
+.azar .panel-vos { position: absolute; z-index: 10; top: 70px; right: clamp(16px, 1.6vw, 28px); bottom: clamp(16px, 2.6vh, 28px); width: min(440px, calc(100% - 32px)); overflow-y: auto;
+  border-radius: 20px; background: linear-gradient(180deg, rgba(26,31,56,.94), rgba(14,17,34,.94)); border: 1px solid rgba(199,204,228,.16); backdrop-filter: blur(14px);
+  padding: 26px 24px; display: grid; align-content: start; gap: 12px; box-shadow: 0 30px 80px rgba(0,0,0,.6); }
+.azar .panel-vos h2 { font-family: var(--fd); font-size: 28px; font-weight: 600; margin-top: 6px; }
+.azar .cerrar-vos { position: absolute; right: 12px; top: 10px; width: 40px; height: 40px; border-radius: 50%; border: 0; background: none; color: var(--mute); font-size: 28px; line-height: 1; }
+.azar .cerrar-vos:hover { color: var(--fg); }
+.azar .panel-vos .campo { width: 100%; background: var(--bg2); color: var(--fg); border: 1px solid var(--line); border-radius: 12px; padding: 13px; font: 500 17px var(--fb); user-select: text; -webkit-user-select: text; }
+.azar .perfil-grande { display: flex; align-items: center; gap: 16px; } .perfil-grande .luna { width: 64px; height: 64px; font-size: 24px; }
+.azar .p-nombre { display: block; font-family: var(--fd); font-size: 30px; font-weight: 600; line-height: 1; } .perfil-grande small { color: var(--mute); font-size: 13px; }
+.azar .historial { list-style: none; padding: 0; display: grid; gap: 6px; } .historial li { padding: 10px 12px; border-radius: 12px; background: var(--bg2); border-left: 3px solid var(--line); font-size: 14px; }
+.azar .historial li.gane { border-left-color: var(--acc); }
+.azar .acciones { display: grid; gap: 10px; margin-top: 10px; } .borrar { display: grid; gap: 10px; }
+.azar .legal { margin-top: 14px; font-size: 12px; color: var(--mute); text-align: center; } .legal a { color: var(--mute); }
+.azar .toast { position: absolute; z-index: 20; left: 50%; transform: translateX(-50%); bottom: 24px; max-width: calc(100% - 32px); text-align: center; background: var(--fg); color: #0A0C16; border-radius: 14px; padding: 10px 16px; font-weight: 600; box-shadow: 0 8px 24px rgba(0,0,0,.5); }
+
+/* botón flotante de pantalla completa en las mesas y menús (nucleo/pantalla.js) */
+.btn-pantalla { position: fixed; z-index: 95; left: max(10px, env(safe-area-inset-left)); bottom: max(10px, env(safe-area-inset-bottom)); width: 36px; height: 36px; border-radius: 10px;
+  border: 1px solid rgba(199,204,228,.18); background: rgba(10,12,22,.55); color: var(--acc2); display: grid; place-items: center; opacity: .6; }
+.btn-pantalla:hover { opacity: 1; }
+.btn-pantalla svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; }
+
+/* ---------- compu baja (1366×768) ---------- */
+@media (max-height: 820px) and (min-width: 900px) {
+  .azar .titular { font-size: clamp(38px, 6.2vh, 54px); }
+  .azar .saludo-bloque { margin-bottom: 22px; }
+  .azar .baraja { width: clamp(120px, 10vw, 160px); }
+}
+
+/* ---------- celular y ventanas angostas ---------- */
+@media (max-width: 899px) {
+  .azar { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr) auto; grid-template-areas: "nav" "escena" "amigos"; }
+  .azar .az-nav { gap: 12px; padding-bottom: 6px; }
+  .azar .pestanas button { padding: 8px 8px; }
+  .azar .marca { letter-spacing: .3em; }
+  .azar .ico-btn { width: 36px; height: 36px; }
+  .azar .yo .luna { width: 36px; height: 36px; }
+  .azar .escena { padding: 0 16px 10px; }
+  .azar .ancla-eclipse { width: clamp(50px, 7.6vh, 72px); left: 74%; top: 46%; }
+  .azar .saludo { font-size: 10.5px; letter-spacing: .2em; }
+  .azar .titular { font-size: clamp(32px, 4.6vh, 42px); }
+  .azar .saludo-bloque { margin-bottom: 14px; gap: 8px; }
+  .azar .barajas { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .azar .baraja { width: auto; aspect-ratio: auto; min-height: clamp(84px, 11.4vh, 108px); padding: 12px 12px 12px clamp(58px, 16vw, 70px); align-content: center; border-radius: 14px; }
+  .azar .baraja .signo { left: clamp(30px, 8vw, 36px); top: 50%; width: clamp(34px, 9vw, 42px); }
+  .azar .baraja b { font-size: 23px; }
+  .azar .baraja .vivo { font-size: 11px; }
+  .azar .baraja.vacia { display: none; }
+  .azar .baraja:not(.vacia):hover { transform: none; }
+  .azar .az-franja { margin-top: 12px; } .az-reflejo { height: 18px; }
+  .azar .seguir { width: 100%; padding: 8px 10px; } .seguir b { font-size: 18px; } .seguir .btn { margin-left: auto; }
+  .azar .amigos { margin: 0 16px max(12px, env(safe-area-inset-bottom)); padding: 12px 14px; max-height: min(30vh, 250px); gap: 6px; }
+  .azar .amigos h2 { font-size: 21px; }
+  .azar .amigos-lista { gap: 8px; }
+  .azar .amigo { grid-template-columns: 36px 1fr; } .amigo .luna { width: 36px; height: 36px; }
+  .azar .leyenda { padding-top: 6px; font-size: 10.5px; }
+  .azar .panel-vos { top: 64px; left: 12px; right: 12px; bottom: 12px; width: auto; padding: 22px 18px; }
+}
+@media (max-width: 899px) and (max-height: 700px) { .amigos .leyenda { display: none; } .az-reflejo { display: none; } .titular { font-size: 30px; } }
+
+@media (prefers-reduced-motion: reduce) { .baraja, .baraja .signo { transition: none; } }
+/* las mesas ya traen su botón de pantalla completa arriba: el flotante queda solo para los menús */
+body:has(.mesa) .btn-pantalla { display: none; }

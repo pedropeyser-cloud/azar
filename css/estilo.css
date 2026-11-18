@@ -1,0 +1,118 @@
+/* Base de AZAR: identidad «Eclipse» (etapa 4, 2026-11-18). Azul noche, oro de corona, plata lunar.
+   Cormorant Garamond para títulos y Manrope para todo lo que se lee jugando. Los nombres viejos de los tokens
+   (--noche, --ambar, --papel…) se conservan para que las mesas tomen los colores nuevos sin reescribirlas. */
+@font-face { font-family: "Cormorant Garamond"; src: url(../fuentes/CormorantGaramond.woff2) format("woff2"); font-weight: 300 700; font-display: swap; }
+@font-face { font-family: "Cormorant Garamond"; src: url(../fuentes/CormorantGaramond-Italic.woff2) format("woff2"); font-style: italic; font-weight: 300 700; font-display: swap; }
+@font-face { font-family: Manrope; src: url(../fuentes/Manrope.woff2) format("woff2"); font-weight: 200 800; font-display: swap; }
+
+:root {
+  /* Eclipse */
+  --bg: #0A0C16; --bg2: #121629; --surf: #1A1F38; --line: #2C3354; --fg: #F1EBDD; --mute: #8A90AE; --acc: #E9B54A; --acc2: #C7CCE4;
+  --brasa: #E07A4F; --acc-t: rgba(233,181,74,.12); --glow: 0 0 0 4px rgba(233,181,74,.18), 0 8px 28px rgba(233,181,74,.28);
+  --fd: "Cormorant Garamond", Georgia, serif; --fb: Manrope, "Segoe UI", system-ui, sans-serif;
+  /* nombres heredados, ya con los valores de Eclipse */
+  --noche: var(--bg); --papel: var(--fg); --tinta: #0A0C16; --ambar: var(--acc); --ambar-p: #B8862F; --dorso: var(--bg2);
+  --superficie: var(--surf); --linea: var(--line); --gris: var(--mute); --texto-suave: var(--acc2); --pano: #121629;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; margin: 0; }
+html, body { height: 100%; }
+body { background: var(--noche); color: var(--papel); font-family: var(--fb); font-variant-numeric: tabular-nums; -webkit-font-smoothing: antialiased;
+  overflow: hidden; -webkit-tap-highlight-color: transparent; user-select: none; -webkit-user-select: none; }
+button { font: inherit; color: inherit; cursor: pointer; touch-action: manipulation; }
+[hidden] { display: none !important; }
+:focus-visible { outline: 2px solid var(--ambar); outline-offset: 2px; }
+
+.grano { position: fixed; inset: 0; pointer-events: none; z-index: 90; opacity: .09; mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E"); }
+
+/* la lámpara de arriba */
+.pantalla { position: fixed; inset: 0; }
+.pantalla::before { content: ""; position: absolute; inset: 0; pointer-events: none; z-index: 40;
+  background: radial-gradient(ellipse 62% 58% at 50% -6%, rgba(233,181,74,.14), rgba(199,204,228,.04) 55%, transparent 78%),
+              radial-gradient(ellipse 120% 90% at 50% 45%, transparent 50%, rgba(0,0,0,.45)); }
+
+.boton { min-height: 48px; padding: 10px 22px; border-radius: 99px; border: 1px solid var(--linea); background: var(--superficie); font-weight: 600; font-size: 17px; }
+.boton.primario { background: linear-gradient(180deg, #F2C463, #D99A3A); color: var(--tinta); border-color: #E9B54A; }
+.boton.suave { background: transparent; color: var(--gris); }
+.boton:active { transform: scale(.97); }
+.svg-carta { display: block; width: 100%; height: 100%; }
+
+/* ---------- inicio ---------- */
+.inicio { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: safe center; gap: 22px;
+  padding: max(28px, env(safe-area-inset-top)) 20px 28px; text-align: center; overflow-y: auto; }
+.inicio .sello { font-family: var(--fd); font-size: clamp(88px, 26vw, 150px); line-height: .8; font-weight: 700; color: var(--ambar); letter-spacing: .01em; }
+.inicio .lema { color: var(--texto-suave); max-width: 30ch; line-height: 1.4; font-size: 17px; }
+.inicio .grupo { display: flex; flex-direction: column; gap: 10px; align-items: center; width: min(360px, 100%); }
+.inicio .etiqueta { font-family: var(--fb); font-size: 12px; color: var(--gris); }
+.inicio .dificultades { display: flex; gap: 8px; width: 100%; }
+.inicio .dif { flex: 1; min-height: 64px; padding: 8px 6px; border-radius: 16px; border: 1px solid var(--linea); background: var(--superficie); display: flex; flex-direction: column; gap: 2px; align-items: center; justify-content: center; }
+.inicio .dif b { font-size: 16px; }
+.inicio .dif small { font-family: var(--fb); font-size: 10.5px; color: var(--gris); }
+.inicio .dif[aria-pressed=true] { border-color: var(--ambar); background: rgba(233,181,74,.1); }
+.inicio .dif[aria-pressed=true] b { color: var(--ambar); }
+.inicio .jugar { width: min(360px, 100%); font-size: 22px; min-height: 58px; }
+.inicio .reglas { max-width: 38ch; font-size: 14.5px; line-height: 1.5; color: var(--texto-suave); text-align: left; }
+.inicio .reglas summary { text-align: center; cursor: pointer; color: var(--ambar); font-family: var(--fd); font-size: 22px; }
+.inicio .reglas ul { margin: 8px 0 0 18px; display: grid; gap: 4px; }
+.inicio .pronto { font-family: var(--fb); font-size: 11px; color: var(--gris); }
+
+.inicio .sello.chico { font-size: clamp(64px, 18vw, 96px); }
+.inicio .link { width: 100%; background: var(--superficie); color: var(--papel); border: 1px solid var(--linea); border-radius: 12px; padding: 12px; font-family: var(--fb); font-size: 12.5px; user-select: text; -webkit-user-select: text; }
+
+/* 2026-11-16: formato de la partida y desafío del día en el menú de CHIN */
+.inicio .formatos { display: flex; gap: 8px; width: 100%; }
+.inicio .fmt { flex: 1; min-height: 56px; padding: 8px 6px; border-radius: 16px; border: 1px solid var(--linea); background: var(--superficie); display: flex; flex-direction: column; gap: 2px; align-items: center; justify-content: center; }
+.inicio .fmt b { font-size: 16px; }
+.inicio .fmt small { font-family: var(--fb); font-size: 10.5px; color: var(--gris); }
+.inicio .fmt[aria-pressed=true] { border-color: var(--ambar); background: rgba(233,181,74,.1); }
+.inicio .fmt[aria-pressed=true] b { color: var(--ambar); }
+.inicio .desafio-lema { font-size: 14px; color: var(--texto-suave); text-align: center; }
+.inicio .desafio-tabla { width: 100%; text-align: left; }
+.inicio .desafio-tabla summary { cursor: pointer; font-family: var(--fb); font-size: 12px; color: var(--gris); padding: 6px 0; }
+.inicio .desafio-filas { font-size: 14px; color: var(--texto-suave); }
+.tabla-dia { list-style: none; padding: 0; margin: 4px 0 0; display: grid; gap: 2px; width: 100%; }
+.tabla-dia li { display: grid; grid-template-columns: 26px 1fr auto; align-items: baseline; gap: 8px; padding: 3px 8px; border-radius: 8px; }
+.tabla-dia li.yo { background: rgba(233,181,74,.14); }
+.tabla-dia .puesto { font-family: var(--fb); font-size: 12px; color: var(--gris); }
+.tabla-dia .quien { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tabla-dia b { font-family: var(--fb); font-size: 13px; font-variant-numeric: tabular-nums; color: var(--papel); }
+.tabla-vacia { font-size: 14px; color: var(--texto-suave); }
+
+/* ---------- AZAR, etapa 4: los menús de los juegos a pantalla completa ----------
+   En la compu, dos columnas: el nombre del juego, su lema y las reglas a la izquierda; las opciones a la derecha.
+   Los bots se eligen por su sol (Totalidad, Mordida, Anillo de diamante). */
+.inicio .dif .cara-sol, .inicio .socio .cara-sol { width: 38px; height: 38px; margin-bottom: 4px; }
+.inicio .dificultades .dif, .inicio .dificultades .socio { min-height: 96px; }
+.inicio .sello { font-family: var(--fd); font-weight: 600; letter-spacing: .01em; }
+@media (min-width: 1000px) {
+  .inicio.juego-menu { display: grid; grid-template-columns: minmax(0, 1fr) minmax(380px, 460px); column-gap: clamp(48px, 8vw, 160px); row-gap: 18px;
+    align-content: center; align-items: start; justify-items: stretch; padding: 72px clamp(40px, 8vw, 160px) 56px; text-align: left; grid-auto-flow: row dense; }
+  .juego-menu > .sello, .juego-menu > .lema, .juego-menu > .reglas, .juego-menu > .pronto { grid-column: 1; justify-self: start; text-align: left; }
+  .juego-menu > :not(.sello):not(.lema):not(.reglas):not(.pronto) { grid-column: 2; width: 100%; }
+  .juego-menu > .sello { font-size: clamp(110px, 11vw, 190px); line-height: .9; grid-row: 1 / span 2; align-self: end; }
+  .juego-menu > .lema { max-width: 34ch; font-size: 19px; }
+  .juego-menu > .reglas { max-width: 52ch; }
+  .juego-menu > .reglas summary { text-align: left; }
+  .juego-menu .grupo { width: 100%; }
+  .juego-menu .jugar, .juego-menu .boton { width: 100%; }
+}
+
+/* celular: que el menú del juego entre sin scroll en 390×844 */
+@media (max-width: 999px) {
+  .inicio.juego-menu { gap: 14px; padding-top: max(20px, env(safe-area-inset-top)); padding-bottom: 20px; }
+  .juego-menu > .sello { font-size: clamp(60px, 17vw, 84px); }
+  .juego-menu > .lema { font-size: 15px; }
+  .inicio .dificultades .dif, .inicio .dificultades .socio { min-height: 84px; }
+  .inicio .dif .cara-sol, .inicio .socio .cara-sol { width: 32px; height: 32px; }
+}
+@media (max-width: 999px) {
+  .inicio.juego-menu .grupo { gap: 8px; }
+  .inicio .dificultades .dif, .inicio .dificultades .socio { min-height: 0; padding: 8px 4px; }
+  .inicio .dif .cara-sol, .inicio .socio .cara-sol { width: 28px; height: 28px; margin-bottom: 2px; }
+  .inicio .formatos .fmt { min-height: 50px; }
+  .inicio .desafio-lema { display: none; }
+  .inicio.juego-menu { gap: 10px; }
+  .inicio.juego-menu > .boton.suave { min-height: 38px; padding: 6px 16px; }
+  .inicio.juego-menu .jugar { min-height: 52px; font-size: 20px; }
+}
