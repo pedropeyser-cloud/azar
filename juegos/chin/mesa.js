@@ -138,12 +138,7 @@ export function montarMesa(cont, { fuente, salir, otraDificultad, alFin, pieFin 
       if (document.fullscreenElement) { salioAPropósito = true; document.exitFullscreen().catch(() => {}); }
       else { salioAPropósito = false; pedirPantallaCompleta(); }
     });
-    // se juega en pantalla completa: si no lo está (entró por link, apretó Esc, el navegador no la dio), la vuelve a pedir
-    // en cualquier toque o tecla sobre la mesa. Solo se queda en ventana si la sacó con el botón ⛶.
-    const reintentar = (e) => { if (!salioAPropósito && !document.fullscreenElement && !e.target.closest?.(".pantalla-btn")) pedirPantallaCompleta(); };
-    mesa.addEventListener("pointerdown", reintentar, true);
-    addEventListener("keydown", reintentar, true);
-    quitarReintento = () => removeEventListener("keydown", reintentar, true);
+    // la pantalla completa no se pide sola (Pedro, 2026-11-18): solo con este botón.
   }
   const pintarPantalla = () => {
     btnPantalla.textContent = document.fullscreenElement ? "🗗" : "⛶";

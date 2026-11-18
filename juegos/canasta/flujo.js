@@ -3,7 +3,7 @@
 import { canasta } from "./index.js";
 import { crearAnfitrion, entrarComoInvitado } from "./red-fuente.js";
 import { sonido } from "../../nucleo/sonido.js";
-import { pedirPantallaCompleta } from "./mesa.js";
+
 import { PERSONAJES } from "./personajes.js";
 import { solBot } from "../../nucleo/caras.js";
 
@@ -56,7 +56,6 @@ export function menu(app, ctx) {
 export function contraBot(app, ctx, dif, { semilla } = {}) {
   if (dif && DIFS.some((d) => d.k === dif)) dificultad = dif;
   sonido.despertar();
-  pedirPantallaCompleta();
   cerrar();
   const p = ctx.yo();
   baja = canasta.montar(app, { dificultad, semilla, nombre: p.nombre, estilo: p.estilo, salir: ctx.volver, otraDificultad: () => menu(app, ctx), alCrear: (f) => { window.__fuente = f; } });
@@ -64,7 +63,6 @@ export function contraBot(app, ctx, dif, { semilla } = {}) {
 
 function invitar(app, ctx) {
   sonido.despertar();
-  pedirPantallaCompleta();
   cerrar();
   const a = crearAnfitrion(ctx.yo(), { meta: Number(window.__metaCanasta) || 5000 });   // __metaCanasta: solo pruebas
   baja = () => a.cerrar();

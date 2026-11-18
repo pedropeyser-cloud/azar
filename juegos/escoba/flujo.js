@@ -5,7 +5,7 @@ import { escoba } from "./index.js";
 import { crearAnfitrion, entrarComoInvitado } from "./red-fuente.js";
 import { crearAnfitrion4, entrarComoInvitado4 } from "./red4-fuente.js";
 import { sonido } from "../../nucleo/sonido.js";
-import { pedirPantallaCompleta } from "./mesa.js";
+
 import { PERSONAJES } from "./personajes.js";
 import { solBot } from "../../nucleo/caras.js";
 
@@ -96,7 +96,6 @@ export function contraBot(app, ctx, dif, { semilla, jugadores, companero: socio 
   if (socio && DIFS.some((d) => d.k === socio)) companero = socio;
   const de4 = jugadores === 4;
   sonido.despertar();
-  pedirPantallaCompleta();
   cerrar();
   const p = ctx.yo();
   baja = escoba.montar(app, {
@@ -125,7 +124,6 @@ const errorSala = (e) => (["network", "server-error", "socket-error", "socket-cl
 
 function invitar(app, ctx) {
   sonido.despertar();
-  pedirPantallaCompleta();
   cerrar();
   const a = crearAnfitrion(ctx.yo());
   baja = () => a.cerrar();
@@ -178,7 +176,6 @@ function sillasHTML(sillas, yo, editable, elegida) {
 
 function invitar4(app, ctx) {
   sonido.despertar();
-  pedirPantallaCompleta();
   cerrar();
   const a = crearAnfitrion4(ctx.yo(), { meta: Number(window.__metaEscoba) || 15 });   // __metaEscoba: solo pruebas
   baja = () => a.cerrar();
@@ -260,7 +257,6 @@ function entrar4(app, codigo, ctx) {
   });
   let n = 0;
   inv.alListo(() => {
-    pedirPantallaCompleta();
     const mesa = escoba.montar(app, {
       fuente: inv.fuente, salir: ctx.volver,
       alFin: (v) => ctx.alFin?.({ v, fuente: inv.fuente, codigo, n: ++n, ...datosFin(v) }),

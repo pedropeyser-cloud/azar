@@ -14,7 +14,4 @@ export function alternarPantalla() {
 export const botonPantalla = () => (document.fullscreenEnabled
   ? `<button class="b claro" data-pantalla>${document.fullscreenElement ? "Salir de pantalla completa" : "Pantalla completa"}</button>` : "");
 
-// al empezar a jugar desde la compu, se agranda sola
-document.addEventListener("click", (e) => {
-  if (e.target.closest?.("#btn-crear, #btn-practica, #btn-entrar, #btn-repartir")) pantallaCompleta();
-}, true);
+// AZAR (Pedro, 2026-11-18): la pantalla completa no se pide sola al empezar; se entra y se sale con el botón.

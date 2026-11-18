@@ -3,7 +3,7 @@
 import { chin } from "./index.js";
 import { crearAnfitrion, entrarComoInvitado } from "./red-fuente.js";
 import { sonido } from "../../nucleo/sonido.js";
-import { pedirPantallaCompleta } from "./mesa.js";
+
 import { PERSONAJES } from "./personajes.js";
 import { solBot } from "../../nucleo/caras.js";
 import { montarTutorial, visto as tutorialVisto } from "./tutorial.js";
@@ -99,7 +99,6 @@ export function tutorial(app, ctx, despues) {
 export function contraBot(app, ctx, dif, { tutorial: conTutorial = true } = {}) {
   if (dif && DIFS.some((d) => d.k === dif)) dificultad = dif;
   sonido.despertar();
-  pedirPantallaCompleta();
   // la primera partida arranca con el tutorial (una sola vez)
   if (conTutorial && !tutorialVisto()) { tutorial(app, ctx, () => contraBot(app, ctx, dificultad, { tutorial: false })); return; }
   cerrar();
@@ -110,7 +109,6 @@ export function contraBot(app, ctx, dif, { tutorial: conTutorial = true } = {}) 
 /** Desafío del día: el reparto de hoy contra Rata. Las revanchas que siguen son partidas comunes. */
 async function desafio(app, ctx) {
   sonido.despertar();
-  pedirPantallaCompleta();
   cerrar();
   const dia = D.diaDeHoy();
   app.innerHTML = `<main class="inicio sala"><h1 class="sello chico">Chin</h1><p class="lema">Preparando el desafío del día…</p></main>`;
@@ -126,7 +124,6 @@ async function desafio(app, ctx) {
 
 function invitar(app, ctx) {
   sonido.despertar();
-  pedirPantallaCompleta();
   cerrar();
   const a = crearAnfitrion(ctx.yo(), { formato });
   baja = () => a.cerrar();

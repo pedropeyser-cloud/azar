@@ -154,10 +154,17 @@ export function montarLobby(app, { abrirJuego, tab: tabInicial = "jugar" }) {
   }
 
   // ---------- intensidad del sonido: sube al pasar por los juegos y por el eclipse ----------
-  app.onpointerover = (ev) => {
-    if (ev.target.closest(".baraja:not(.vacia)")) ambiente.intensidad(0.9);
-    else if (ev.target.closest(".cielo-zona, .saludo-bloque")) ambiente.intensidad(0.6);
-    else ambiente.reposo();
+  // Cada juego tiene su acorde (foco "juego:<id>"); el eclipse crece cuanto más cerca pasa el puntero (hasta ~4 radios).
+  app.onpointermove = (ev) => {
+    const b = ev.target.closest(".baraja:not(.vacia)");
+    if (b) { ambiente.foco("juego:" + b.dataset.juego, 1); return; }
+    const ancla = app.querySelector(".ancla-eclipse")?.getBoundingClientRect();
+    if (ancla && ancla.width > 0 && !vos) {
+      const r = ancla.width / 2, d = Math.hypot(ev.clientX - (ancla.left + r), ev.clientY - (ancla.top + r));
+      const cerca = 1 - Math.max(0, d - r) / (r * 3.5);
+      if (cerca > 0) { ambiente.foco("eclipse", cerca * cerca * (3 - 2 * cerca)); return; }
+    }
+    ambiente.reposo();
   };
   app.onpointerleave = () => ambiente.reposo();
   ambiente.mesa(false);
@@ -200,7 +207,7 @@ export function montarLobby(app, { abrirJuego, tab: tabInicial = "jugar" }) {
   cargarAmigos(); cargarPartidas();
   sondeo = setInterval(cargarAmigos, 20000);
   return () => {
-    vivo = false; clearInterval(sondeo); app.onclick = null; app.onpointerover = null; app.onpointerleave = null;
+    vivo = false; clearInterval(sondeo); app.onclick = null; app.onpointermove = null; app.onpointerleave = null;
     removeEventListener("keydown", alTecla); document.removeEventListener("fullscreenchange", alPantalla);
   };
 }

@@ -1,6 +1,7 @@
 // Arranque de AZAR: el inicio (Jugar / Vos, con el eclipse de fondo) y los juegos del catálogo (nucleo/registro.js).
 // Todo el estado de cuenta vive en nucleo/nube.js; cada juego se abre con su propio flujo (juegos/<id>/flujo.js).
-// Al tocar un juego: pide pantalla completa (es un toque), la luna cierra la totalidad y la oscuridad se vuelve la mesa.
+// Al tocar un juego: la luna cierra la totalidad y la oscuridad se vuelve la mesa. La pantalla completa no se pide sola
+// (Pedro, 2026-11-18): como en el inicio, se entra y se sale con el botón.
 import "./nucleo/vigia.js";
 import "./nucleo/sin-red.js";
 import * as nube from "./nucleo/nube.js";
@@ -62,7 +63,6 @@ function inicio(tab = "jugar") {
 async function abrirJuego(id) {
   const j = juegoPorId(id);
   if (!j) return;
-  pantalla.entrar();   // los juegos piden pantalla completa al empezar (en iPhone no se puede: no hace nada)
   if (j.estado === "enlace") { await cerrarCielo(); location.href = j.url; return; }
   // la luna cierra mientras se baja el juego; las dos cosas a la vez
   const [mod] = await Promise.all([j.abrir(), cerrarCielo()]);
