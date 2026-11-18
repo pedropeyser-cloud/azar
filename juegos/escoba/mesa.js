@@ -144,7 +144,7 @@ export function montarMesa(cont, { fuente, salir, otraDificultad, alFin }) {
   const panoEstilo = jug[yo]?.estilo?.pano;
   if (panoEstilo) pano.dataset.pano = panoEstilo;
   const caras = Array.from({ length: n }, (_, j) => {
-    const c = el(cara(formas[j] ?? 2, j === yo ? "tu cara" : `cara de ${esc(nombres[j] || "otro jugador")}`));
+    const c = el(cara(formas[j] ?? 2, j === yo ? "tu cara" : `cara de ${nombres[j] || "otro jugador"}`));
     caraSlots[j].append(c);
     return c;
   });

@@ -18,6 +18,10 @@ const PALO = {
   oro: `<circle cx="32" cy="32" r="16"/><circle cx="32" cy="32" r="8"/>`,
   copa: `<path d="M20 12h24c0 12-5 20-12 20s-12-8-12-20zM32 32v14M24 52h16M27 46h10"/>`,
   basto: `<path d="M30 8c6 6-4 12 2 18s-6 10 0 16 -4 10 2 14"/><path d="M27 20l8-3M26 34l9-2"/>`,
+  // juegos de a varios (etapa 5): media luna rayada (siete y medio), dos cartas cruzadas (culo sucio), un dado (desconfío)
+  medio: `<circle cx="32" cy="32" r="17"/><path d="M32 15v34M26 18v28M20 24v16"/>`,
+  culo: `<rect x="16" y="14" width="22" height="32" rx="3"/><rect x="27" y="20" width="22" height="32" rx="3" transform="rotate(12 38 36)"/>`,
+  dado: `<rect x="15" y="15" width="34" height="34" rx="7"/><circle cx="24" cy="24" r="2.4"/><circle cx="32" cy="32" r="2.4"/><circle cx="40" cy="40" r="2.4"/>`,
 };
 const signo = (p) => `<svg class="signo" viewBox="0 0 64 64" aria-hidden="true">${PALO[p] || PALO.oro}</svg>`;
 const MEDIALUNA = `<svg class="medialuna" viewBox="0 0 32 32" aria-hidden="true"><path d="M21 4.5A12.5 12.5 0 1 0 27.5 21 10 10 0 1 1 21 4.5z"/></svg>`;

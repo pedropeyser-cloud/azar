@@ -89,6 +89,8 @@ async function arrancar() {
     juegoAbierto = await j.abrir();
     cerrarCielo(); enJuego(true);
     const semilla = params.get("semilla") ? Number(params.get("semilla")) : undefined;
+    // juegos de a varios (siete y medio…): `bots=tranquilo,rapido` elige contra quiénes
+    if (juegoAbierto.contraBots) { juegoAbierto.contraBots(app, { ...ctx, yo: () => yo(false) }, { bots: params.get("bots") ? params.get("bots").split(",") : undefined, semilla }); return; }
     // `n=4&socio=…`: la escoba de a 4 contra bots (socio: tranquilo | rapido | implacable)
     juegoAbierto.contraBot(app, { ...ctx, yo: () => yo(false) }, params.get("dif"), { tutorial: params.get("tutorial") === "1", semilla, jugadores: Number(params.get("n")) || undefined, companero: params.get("socio") || undefined });
     return;

@@ -117,7 +117,9 @@ function ojos() {
 export const SOLES = { tranquilo: "Totalidad", rapido: "Mordida", implacable: "Anillo de diamante" };
 export const esSol = (f) => typeof f === "string" && /^sol-(tranquilo|rapido|implacable)$/.test(f);
 let _sol = 0;
+const escAttr = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 export function solBot(k, etiqueta = "bot") {
+  etiqueta = escAttr(etiqueta);   // puede venir de un nombre que llegó por la red
   const id = "sb" + (++_sol), f1 = (n) => n.toFixed(1);
   let s = `<svg class="cara-jugador cara-sol sol-${k}" viewBox="-50 -50 100 100" role="img" aria-label="${etiqueta}" data-boca="normal" data-ojos="abiertos" data-cejas="normal"><defs>
     <radialGradient id="${id}c"><stop offset=".5" stop-color="#F1EBDD" stop-opacity=".55"/><stop offset="1" stop-color="#F1EBDD" stop-opacity="0"/></radialGradient>
@@ -144,6 +146,7 @@ export function formaDeJugador(j, porDefecto) {
 
 export function cara(i, etiqueta = "cara", { busto = false, color = "#5b616c" } = {}) {
   if (esSol(i)) return solBot(i.slice(4), etiqueta);
+  etiqueta = escAttr(etiqueta);
   const craneo = CRANEOS[i % CRANEOS.length].replace("/>", ` fill="${PAPEL}" stroke="${TINTA}" stroke-width="${G}"/>`);
   // busto: hombros del color del equipo y cuello, detrás de la cabeza
   const cuerpo = busto ? `<path d="M6 300C8 238 50 208 100 208C150 208 192 238 194 300Z" fill="${color}" stroke="${TINTA}" stroke-width="${G}"/>

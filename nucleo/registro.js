@@ -24,5 +24,15 @@ export const JUEGOS = [
     descripcion: "Juntá siete iguales y armá canastas. Con dos, te vas.",
     abrir: () => import("../juegos/canasta/flujo.js"),
   },
+  {
+    id: "siete", nombre: "Siete y medio", jugadores: [2, 6], cuantos: "de 2 a 6", estado: "listo", palo: "medio", lema: "con porotos",
+    descripcion: "Pedí cartas hasta acercarte a siete y medio sin pasarte, contra la banca.",
+    abrir: () => import("../juegos/siete/flujo.js"),
+  },
+  {
+    id: "culo", nombre: "Culo sucio", jugadores: [2, 6], cuantos: "de 2 a 6", estado: "listo", palo: "culo", lema: "¡desconfío!",
+    descripcion: "Tirá cartas boca abajo diciendo qué son. Si te mienten, desconfiá. El último con cartas pierde.",
+    abrir: () => import("../juegos/culo/flujo.js"),
+  },
 ];
 export const juegoPorId = (id) => JUEGOS.find((j) => j.id === id) || null;
