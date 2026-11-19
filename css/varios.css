@@ -153,10 +153,10 @@ body.con-mesa-n .btn-pantalla { display: none; }
 .revelar-culo.mintio .veredicto { color: var(--brasa) !important; }
 .veredicto span { display: block; font: 500 15px var(--fb); color: var(--texto-suave); }
 .mano-culo { display: flex; flex-wrap: wrap; justify-content: center; align-items: flex-end; row-gap: 8px; padding: 14px 18px 0; max-width: 100%; }
-.mano-culo .carta-s { width: clamp(46px, 4.6vw, 80px); border-radius: 6px; cursor: pointer; transition: transform .15s; }
+.mano-culo .carta-s { width: clamp(46px, 4.6vw, 80px); border-radius: 6px; cursor: pointer; position: relative; transition: transform .15s; }
 .mano-culo .carta-s + .carta-s { margin-left: calc(clamp(46px, 4.6vw, 80px) * -0.42); }
 .mano-culo .carta-s:hover { transform: translateY(-6px); }
-.mano-culo .carta-s.elegida { transform: translateY(-16px); outline: 3px solid var(--ambar); outline-offset: 1px; z-index: 2; }
+.mano-culo .carta-s.elegida { transform: translateY(-16px); outline: 3px solid var(--ambar); outline-offset: 1px; }
 .culo .mi-zona { min-height: 0; }
 .numeros { display: flex; flex-wrap: wrap; gap: 5px; justify-content: flex-end; }
 .num { width: 40px; height: 40px; border-radius: 10px; border: 1px solid var(--linea); background: var(--superficie); font: 700 17px var(--fb); }
@@ -168,4 +168,77 @@ body.con-mesa-n .btn-pantalla { display: none; }
   .mano-culo .carta-s + .carta-s { margin-left: calc(clamp(46px, 4.6vw, 80px) * -0.55); }
   .numeros { justify-content: center; }
   .num { width: 34px; height: 38px; font-size: 15px; }
+}
+
+/* ---------- desconfío (dados «Eclipse», 2026-11-18) ---------- */
+.desconfio { --dado: clamp(40px, min(10.5vw, 7.4dvh), 70px); }
+.desconfio .dado { display: block; width: var(--dado); height: var(--dado); flex: none; transition: transform .25s, opacity .25s; }
+.desconfio .dado.mini { width: clamp(18px, min(4.6vw, 2.8dvh), 28px); height: clamp(18px, min(4.6vw, 2.8dvh), 28px); }
+.desconfio .dado.dc-cuenta { transform: translateY(-4px); filter: drop-shadow(0 0 6px rgba(233,181,74,.55)); }
+.desconfio .dado.dc-apagado { opacity: .42; }
+.desconfio .cubilete { display: block; }
+.desconfio .cubilete.chico { width: clamp(34px, min(7vw, 5.4dvh), 58px); height: auto; aspect-ratio: 100 / 110; }
+.desconfio .cubilete.chico.pensando { animation: pensar-dc 1.6s ease-in-out infinite; transform-origin: 50% 90%; }
+@keyframes pensar-dc { 0%, 100% { transform: rotate(0); } 50% { transform: rotate(-4deg); } }
+.desconfio .dados-silla { display: flex; flex-wrap: wrap; justify-content: center; gap: 3px; max-width: 100%; }
+.desconfio .cuantos-dados { font-weight: 700; color: var(--papel); }
+.desconfio .dijo { max-width: 100%; text-align: center; line-height: 1.2; padding: 1px 7px; border-radius: 99px; border: 1px solid var(--ambar); color: var(--ambar); font-weight: 700; }
+.desconfio .est.fuera { color: var(--gris); font-style: italic; }
+
+.desconfio .mi-zona { gap: clamp(10px, 2vw, 22px); align-items: center; }
+.cubo-mio { background: none; border: 0; padding: 0; cursor: pointer; border-radius: 16px; flex: none; }
+.cubo-mio .cubilete { width: clamp(62px, min(14vw, 11dvh), 104px); height: auto; aspect-ratio: 100 / 110; transition: filter .2s; }
+.cubo-mio:hover .cubilete { filter: brightness(1.2) drop-shadow(0 0 10px rgba(233,181,74,.35)); }
+.cubo-mio:focus-visible { outline: 2px solid var(--ambar); outline-offset: 4px; }
+.cubo-mio:not(.abierto) .cubilete { animation: llamar-dc 2.4s ease-in-out infinite; }
+@keyframes llamar-dc { 0%, 80%, 100% { transform: none; } 86% { transform: rotate(-6deg); } 92% { transform: rotate(5deg); } }
+.cubo-mio.sacude .cubilete { animation: sacudir-dc .36s ease-in-out 2; transform-origin: 50% 90%; }
+@keyframes sacudir-dc { 0%, 100% { transform: none; } 25% { transform: rotate(-12deg) translateY(-8px); } 55% { transform: rotate(10deg) translateY(-12px); } 80% { transform: rotate(-5deg) translateY(-4px); } }
+.mis-dados { display: flex; flex-wrap: wrap; gap: clamp(6px, 1vw, 12px); justify-content: center; align-items: center; min-height: var(--dado); transition: opacity .2s; }
+.mis-dados.tapados .dado { opacity: 0; }
+.mis-dados .toca { color: var(--texto-suave); font-size: 15px; max-width: 22ch; }
+.mis-dados.caen .dado { animation: caer-dc .32s ease-out both; }
+.mis-dados.caen .dado:nth-child(2) { animation-delay: .04s; } .mis-dados.caen .dado:nth-child(3) { animation-delay: .08s; }
+.mis-dados.caen .dado:nth-child(4) { animation-delay: .12s; } .mis-dados.caen .dado:nth-child(5) { animation-delay: .16s; }
+@keyframes caer-dc { from { opacity: 0; transform: translateY(-14px) rotate(-20deg); } to { opacity: 1; transform: none; } }
+.sin-dados { color: var(--texto-suave); font-style: italic; }
+
+.apuesta-dc, .vuelta-dc { display: grid; justify-items: center; gap: 6px; text-align: center; }
+.apuesta-dc small { color: var(--texto-suave); font-size: 13px; }
+.frase-dc { display: flex; align-items: center; gap: 12px; margin: 0; font: 600 clamp(36px, 5vw, 64px) var(--fd); line-height: 1; color: var(--papel); }
+.frase-dc .dado.frase { width: clamp(40px, 5vw, 64px); height: clamp(40px, 5vw, 64px); }
+.cadena-dc { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 12px; margin: 0; font-size: 12.5px; color: var(--gris); }
+.cadena-dc span { display: inline-flex; align-items: center; gap: 3px; }
+.cadena-dc .dado.mini { width: 16px; height: 16px; }
+.abre-dc { font: 600 clamp(26px, 3vw, 38px) var(--fd); color: var(--texto-suave); margin: 0; }
+.obligada-dc { margin: 8px 0 0; padding: 4px 12px; border-radius: 99px; border: 1px solid var(--brasa); color: var(--brasa); font-size: 13px; font-weight: 700; text-align: center; }
+.centro-n:has(.obligada-dc) { align-content: center; }
+.vuelta-dc { max-width: 560px; padding: 14px 18px; border-radius: 18px; background: rgba(10,12,22,.7); border: 1px solid var(--linea); }
+.vuelta-dc p { margin: 0; color: var(--texto-suave); font-size: 15px; }
+.vuelta-dc .hay { font: 600 clamp(24px, 3vw, 34px) var(--fd); color: var(--papel); }
+.vuelta-dc .hay b { color: var(--ambar); }
+.vuelta-dc .pierde-dc { font: 700 clamp(24px, 2.6vw, 34px) var(--fd); color: var(--ambar); }
+.vuelta-dc.erra .pierde-dc { color: var(--brasa); }
+
+.armar-dc { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 8px; }
+.paso-dc { display: flex; align-items: center; gap: 2px; border: 1px solid var(--linea); border-radius: 14px; background: var(--superficie); }
+.paso-dc button { width: 44px; height: 48px; border: 0; background: none; color: var(--papel); font: 700 22px var(--fb); border-radius: 12px; cursor: pointer; }
+.paso-dc button:disabled { opacity: .3; cursor: default; }
+.paso-dc b { min-width: 2ch; text-align: center; font: 700 26px var(--fd); color: var(--ambar); }
+.caras-dc { display: flex; gap: 4px; }
+.cara-dc { padding: 3px; border-radius: 12px; border: 2px solid transparent; background: none; cursor: pointer; }
+.cara-dc .dado { width: clamp(30px, 3vw, 42px); height: clamp(30px, 3vw, 42px); }
+.cara-dc.si { border-color: var(--ambar); background: rgba(233,181,74,.12); }
+.cara-dc:disabled { opacity: .25; cursor: default; }
+.controles-n .canto-desconfio { background: var(--brasa); border-color: var(--brasa); color: var(--tinta); }
+.controles-n .canto-confio { background: transparent; border-color: var(--ambar); color: var(--ambar); }
+@media (max-width: 720px) {
+  .desconfio .mi-pie { flex-wrap: wrap; }
+  .desconfio .controles-n { flex-basis: 100%; justify-content: center; }
+  .armar-dc { justify-content: center; }
+  .cara-dc .dado { width: 34px; height: 34px; }
+  .desconfio .controles-n .boton { min-height: 46px; font-size: 16px; padding-inline: 14px; }
+  .desconfio .controles-n .apostar { flex-basis: 100%; }
+  .desconfio .controles-n .canto-confio, .desconfio .controles-n .canto-desconfio { flex: 1 1 0; }
+  .desconfio .dijo { font-size: 10.5px; padding: 1px 5px; }
 }

@@ -34,5 +34,10 @@ export const JUEGOS = [
     descripcion: "Tirá cartas boca abajo diciendo qué son. Si te mienten, desconfiá. El último con cartas pierde.",
     abrir: () => import("../juegos/culo/flujo.js"),
   },
+  {
+    id: "desconfio", nombre: "Desconfío", jugadores: [2, 6], cuantos: "de 2 a 6", estado: "listo", palo: "dado", lema: "cubilete y faroles",
+    descripcion: "Cinco dados tapados por cabeza y una apuesta que sube. Los ases valen por cualquiera. Si no le creés, desconfiá.",
+    abrir: () => import("../juegos/desconfio/flujo.js"),
+  },
 ];
 export const juegoPorId = (id) => JUEGOS.find((j) => j.id === id) || null;

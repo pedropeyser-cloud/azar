@@ -39,21 +39,22 @@
 .azar .titular { font-family: var(--fd); font-weight: 500; font-size: clamp(40px, 5.6vh, 66px); line-height: 1.02; letter-spacing: -.005em; text-shadow: 0 2px 30px rgba(10,12,22,.8); }
 
 .azar .mostrador { position: relative; padding-bottom: 2px; }
-.azar .barajas { display: flex; gap: clamp(12px, 1.4vw, 24px); align-items: flex-end; }
-.azar .baraja { position: relative; width: clamp(128px, 10.6vw, 190px); aspect-ratio: 150 / 214; border-radius: 14px; flex: none;
+.azar .barajas { display: flex; flex-wrap: wrap; gap: clamp(12px, 1.4vw, 24px); align-items: flex-end; }
+.azar .baraja { position: relative; flex: 1 1 0; min-width: 104px; max-width: clamp(128px, 10.6vw, 190px); aspect-ratio: 150 / 214; border-radius: 14px;
   background: linear-gradient(180deg, #1B2140, #10142A); border: 1px solid #3A4270; color: var(--fg); text-align: left;
   box-shadow: 0 30px 40px -18px rgba(0,0,0,.8), inset 0 1px 0 rgba(255,255,255,.06);
   display: grid; align-content: end; gap: 3px; padding: clamp(12px, 1vw, 18px); overflow: hidden;
   transition: transform .35s cubic-bezier(.2,.8,.2,1), border-color .25s, box-shadow .35s; }
 .azar .baraja .signo { position: absolute; left: 50%; top: 38%; transform: translate(-50%, -50%); width: 44%; height: auto; fill: none; stroke: var(--acc2); stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; transition: stroke .25s, filter .35s; }
-.azar .baraja b { font-family: var(--fd); font-size: clamp(22px, 1.6vw, 30px); font-weight: 600; line-height: 1; white-space: nowrap; }
+.azar .baraja b { font-family: var(--fd); font-size: clamp(22px, 1.6vw, 30px); font-weight: 600; line-height: .95; text-wrap: balance; }
+/* 2026-11-18: con siete barajas (Desconfío) se achican para entrar al lado de Amigos; el nombre puede ir en dos renglones */
 .azar .baraja small { font-size: 12px; color: var(--mute); }
 .azar .baraja .vivo { font-size: 12px; color: var(--acc); line-height: 1.25; }
 .azar .baraja:not(.vacia):hover, .azar .baraja:not(.vacia):focus-visible { transform: translateY(-10px); border-color: var(--acc);
   box-shadow: 0 40px 50px -20px rgba(0,0,0,.85), 0 0 0 1px var(--acc), 0 0 46px rgba(233,181,74,.28); outline: none; }
 .azar .baraja:not(.vacia):hover .signo, .azar .baraja:not(.vacia):focus-visible .signo { stroke: var(--acc); filter: drop-shadow(0 0 8px rgba(233,181,74,.6)); }
 .azar .baraja:active { transform: translateY(-4px) scale(.98); }
-.azar .baraja.vacia { width: clamp(70px, 5.6vw, 96px); background: transparent; border-style: dashed; border-color: #2C3354; box-shadow: none; place-items: center; align-content: center; }
+.azar .baraja.vacia { flex: none; min-width: 0; max-width: none; width: clamp(70px, 5.6vw, 96px); background: transparent; border-style: dashed; border-color: #2C3354; box-shadow: none; place-items: center; align-content: center; }
 .azar .baraja.vacia small { writing-mode: vertical-rl; transform: rotate(180deg); letter-spacing: .14em; text-transform: uppercase; font-size: 10.5px; }
 .azar .az-franja { height: 1px; margin-top: 0; background: linear-gradient(90deg, transparent, rgba(233,181,74,.9) 18%, #FFE2A0 50%, rgba(233,181,74,.9) 82%, transparent); box-shadow: 0 0 18px 2px rgba(233,181,74,.45); }
 .azar .az-reflejo { height: clamp(28px, 6vh, 70px); background: linear-gradient(180deg, rgba(233,181,74,.08), transparent); margin: 0 3%; }
@@ -114,7 +115,13 @@
 @media (max-height: 820px) and (min-width: 900px) {
   .azar .titular { font-size: clamp(38px, 6.2vh, 54px); }
   .azar .saludo-bloque { margin-bottom: 22px; }
-  .azar .baraja { width: clamp(120px, 10vw, 160px); }
+  .azar .baraja { max-width: clamp(120px, 10vw, 160px); }
+}
+/* siete barajas angostas: un poco más altas y el signo más arriba, así el nombre en dos renglones no lo pisa */
+@media (min-width: 900px) and (max-width: 1600px) {
+  .azar .baraja { aspect-ratio: 150 / 240; }
+  .azar .baraja .signo { top: 27%; width: 38%; }
+  .azar .baraja.vacia { display: none; }
 }
 
 /* ---------- celular y ventanas angostas ---------- */
