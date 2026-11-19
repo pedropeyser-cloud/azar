@@ -39,5 +39,10 @@ export const JUEGOS = [
     descripcion: "Cinco dados tapados por cabeza y una apuesta que sube. Los ases valen por cualquiera. Si no le creés, desconfiá.",
     abrir: () => import("../juegos/desconfio/flujo.js"),
   },
+  {
+    id: "generala", nombre: "Generala", jugadores: [2, 6], cuantos: "de 2 a 6", estado: "listo", palo: "planilla", lema: "tres tiros por turno",
+    descripcion: "Cinco dados y tres tiros: escalera, full, póker y generala. La servida gana en el acto.",
+    abrir: () => import("../juegos/generala/flujo.js"),
+  },
 ];
 export const juegoPorId = (id) => JUEGOS.find((j) => j.id === id) || null;

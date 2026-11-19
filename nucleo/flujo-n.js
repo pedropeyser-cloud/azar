@@ -16,11 +16,18 @@ const errorSala = (e) => (["network", "server-error", "socket-error", "socket-cl
 
 /**
  * @param {{ A: object, montarMesa: (cont, o) => () => void, titulo: string, lema: string, reglas: string,
- *   notaBot?: Record<string, string>, opciones?: () => object, clase?: string }} cfg
+ *   notaBot?: Record<string, string>, opciones?: () => object, clase?: string,
+ *   elecciones?: { clave: string, etiqueta: string, valores: [string, string, string?][], def: string }[] }} cfg
+ * `elecciones`: opciones que se eligen en el menú con botones (la planilla de la generala); se recuerdan y van a
+ * `nuevaPartida` con su `clave`, contra los bots y en la sala con amigos.
  * Devuelve { menu(app, ctx), entrar(app, codigo, ctx), cerrar(), contraBots(app, ctx, { bots, semilla }) }.
  */
-export function crearFlujo({ A, montarMesa, titulo, lema, reglas, notaBot = {}, opciones = () => ({}), clase = "" }) {
+export function crearFlujo({ A, montarMesa, titulo, lema, reglas, notaBot = {}, opciones: extra = () => ({}), clase = "", elecciones = [] }) {
   let baja = null;
+  const leerEleccion = (x) => { const v = leer(`${A.id}.${x.clave}`, x.def); return x.valores.some(([k]) => k === v) ? v : x.def; };
+  const opciones = () => ({ ...Object.fromEntries(elecciones.map((x) => [x.clave, leerEleccion(x)])), ...extra() });   // lo de la URL (pruebas) manda
+  const eleccionesHTML = () => elecciones.map((x) => `<div class="grupo eleccion-n" data-clave="${esc(x.clave)}"><span class="etiqueta">${esc(x.etiqueta)}</span>
+    <div class="elecciones-n" role="radiogroup" aria-label="${esc(x.etiqueta)}">${x.valores.map(([v, t, nota]) => `<button type="button" class="eleccion" role="radio" data-v="${esc(v)}" aria-checked="${leerEleccion(x) === v}"><b>${esc(t)}</b>${nota ? `<small>${esc(nota)}</small>` : ""}</button>`).join("")}</div></div>`).join("");
   const CLAVE_BOTS = `${A.id}.bots`;
   const botsGuardados = () => { const x = leer(CLAVE_BOTS, "rapido").split(",").filter((d) => DIFS.includes(d)); return x.length ? x : ["rapido"]; };
   const cerrar = () => { if (baja) { baja(); baja = null; } };
@@ -32,6 +39,7 @@ export function crearFlujo({ A, montarMesa, titulo, lema, reglas, notaBot = {}, 
       <main class="inicio juego-menu menu-n ${clase}">
         <h1 class="sello">${esc(titulo)}</h1>
         <p class="lema">${lema}</p>
+        ${eleccionesHTML()}
         <div class="grupo">
           <span class="etiqueta">contra los bots: elegí con quiénes (uno, dos o los tres)</span>
           <div class="dificultades">${DIFS.map((k) => `<button class="dif" data-k="${k}" aria-pressed="${elegidos.includes(k)}">${solBot(k, PERSONAJES[k].nombre)}<b>${PERSONAJES[k].nombre}</b><small>${esc(notaBot[k] || PERSONAJES[k].lema)}</small></button>`).join("")}</div>
@@ -54,6 +62,12 @@ export function crearFlujo({ A, montarMesa, titulo, lema, reglas, notaBot = {}, 
       app.querySelectorAll(".dif").forEach((x) => x.setAttribute("aria-pressed", elegidos.includes(x.dataset.k)));
       guardar(CLAVE_BOTS, elegidos.join(","));
       pintarJugar();
+    }));
+    app.querySelectorAll(".eleccion-n").forEach((g) => g.addEventListener("click", (e) => {
+      const b = e.target.closest(".eleccion");
+      if (!b) return;
+      guardar(`${A.id}.${g.dataset.clave}`, b.dataset.v);
+      g.querySelectorAll(".eleccion").forEach((x) => x.setAttribute("aria-checked", String(x === b)));
     }));
     jugar.addEventListener("click", () => contraBots(app, ctx, { bots: elegidos }));
     app.querySelector(".amigos").addEventListener("click", () => invitar(app, ctx));

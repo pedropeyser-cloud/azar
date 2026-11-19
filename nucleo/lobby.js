@@ -22,6 +22,8 @@ const PALO = {
   medio: `<circle cx="32" cy="32" r="17"/><path d="M32 15v34M26 18v28M20 24v16"/>`,
   culo: `<rect x="16" y="14" width="22" height="32" rx="3"/><rect x="27" y="20" width="22" height="32" rx="3" transform="rotate(12 38 36)"/>`,
   dado: `<rect x="15" y="15" width="34" height="34" rx="7"/><circle cx="24" cy="24" r="2.4"/><circle cx="32" cy="32" r="2.4"/><circle cx="40" cy="40" r="2.4"/>`,
+  // generala: una planilla con renglones y un dado del cinco apoyado encima
+  planilla: `<rect x="12" y="8" width="30" height="44" rx="3"/><path d="M17 17h20M17 24h20M17 31h12"/><rect x="30" y="34" width="22" height="22" rx="5" transform="rotate(-10 41 45)"/><circle cx="36" cy="40" r="1.8"/><circle cx="46" cy="38.4" r="1.8"/><circle cx="41" cy="45" r="1.8"/><circle cx="36.2" cy="51.4" r="1.8"/><circle cx="46.4" cy="49.6" r="1.8"/>`,
 };
 const signo = (p) => `<svg class="signo" viewBox="0 0 64 64" aria-hidden="true">${PALO[p] || PALO.oro}</svg>`;
 const MEDIALUNA = `<svg class="medialuna" viewBox="0 0 32 32" aria-hidden="true"><path d="M21 4.5A12.5 12.5 0 1 0 27.5 21 10 10 0 1 1 21 4.5z"/></svg>`;
