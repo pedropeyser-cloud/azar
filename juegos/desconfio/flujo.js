@@ -6,19 +6,20 @@ import { montarMesa } from "./mesa.js";
 const f = crearFlujo({
   A: desconfio, montarMesa, clase: "desconfio",
   titulo: "Desconfío",
-  lema: "Cinco dados bajo el cubilete. Apostá cuántos hay de un número entre todos; los ases valen por cualquiera. Si no le creés al de al lado, «¡Desconfío!».",
-  notaBot: { tranquilo: "cuenta a ojo y apuesta despacio", rapido: "farolea y salta de más", implacable: "hace la cuenta de cada dado" },
-  // pruebas: ?dados=2 acorta la partida
-  opciones: () => { const d = Number(new URLSearchParams(location.search).get("dados")); return d >= 1 && d <= 5 ? { dados: d } : {}; },
+  lema: "Un cubilete que pasa de mano en mano. Cantá tu mano de póker, o mentí. Si no le creés al de al lado, «¡Desconfío!».",
+  notaBot: { tranquilo: "cree lo que sale seguido y miente lo justo", rapido: "farolea y desconfía de olfato", implacable: "cuenta cada dado que volviste a tirar" },
+  // pruebas: ?vidas=1 acorta la partida y ?abre=0 hace que abra el primero (vos, contra los bots)
+  opciones: () => {
+    const q = new URLSearchParams(location.search), k = Number(q.get("vidas")), a = q.get("abre");
+    return { ...(k >= 1 && k <= 3 ? { vidas: k } : {}), ...(a !== null && /^[0-5]$/.test(a) ? { abre: Number(a) } : {}) };
+  },
   reglas: `<ul>
-    <li>Cada uno arranca con 5 dados. En cada ronda todos sacuden el cubilete y miran solo los suyos.</li>
-    <li>Se apuesta cuántos dados hay de un número entre <b>todos</b> los de la mesa: «cuatro cincos». Los <b>ases son comodines</b>: cuentan como cualquier número.</li>
-    <li>El que sigue tiene que subir: más cantidad, o la misma cantidad con un número más alto. Para pasar a ases alcanza la mitad (redondeando para arriba); para salir de ases hace falta el doble más uno. No se abre con ases.</li>
-    <li>En vez de subir podés cantar <b>¡Desconfío!</b>: se levantan los cubiletes. Si hay menos de lo apostado, pierde un dado el que apostó; si hay al menos eso, el que desconfió.</li>
-    <li>O <b>¡Confío!</b>: decís que hay justo eso. Si acertás, recuperás un dado (hasta 5); si no, lo perdés vos.</li>
-    <li>Abre la ronda siguiente el que perdió el dado (o el que acertó el «¡Confío!»).</li>
-    <li><b>Obligada:</b> la primera vez que alguien queda con un solo dado, abre él, los ases no son comodines y nadie puede cambiar el número, solo subir la cantidad.</li>
-    <li>El que se queda sin dados sale. Gana el último con dados.</li>
+    <li>Hay un solo cubilete con cinco dados. El que lo tiene tira tapado, mira y <b>canta una mano</b>: la que tiene o una mentira. Se dice lo repetido y lo que sobra: «full de 3 con 2», «par de 6 con 543».</li>
+    <li>Manos, de menor a mayor: número suelto, par, par doble, pierna, full, póker y generala. Sin escalera. El 1 es el más bajo y el 6 el más alto.</li>
+    <li>El siguiente <b>le cree</b>: recibe el cubilete, mira los dados, puede volver a tirar los que quiera una vez y tiene que cantar algo más alto. O canta <b>¡Desconfío!</b> y se levanta el cubilete.</li>
+    <li>Es verdad si lo que hay vale lo mismo o más que lo cantado. Si desconfiaste de una verdad, perdés una vida y tenés que superarla con esos dados.</li>
+    <li>Si era mentira, el que mintió pierde una vida y queda afuera de la ronda; el que desconfió tira de cero.</li>
+    <li>Cuando queda uno solo en la ronda, gana un punto y abre la siguiente. Cada uno tiene 3 vidas para toda la partida: gana el último con vidas.</li>
   </ul>`,
 });
 export const { menu, entrar, cerrar, contraBots } = f;

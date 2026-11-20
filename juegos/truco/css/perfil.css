@@ -48,7 +48,7 @@
 .hoja.perfil .cifras span { font-family: var(--fb); font-size: 11px; color: #6c6759; }
 .hoja.perfil ul { margin: 4px 0 6px; }
 .hoja.perfil li { align-items: center; }
-.hoja.perfil li small { display: block; font-family: var(--fb); font-size: 10.5px; color: #8a8373; }
+.hoja.perfil li small { display: block; font-family: var(--fb); font-size: 11.5px; color: #8a8373; }
 .hoja.perfil .reg { font-family: var(--fb); font-size: 14px; font-weight: 600; white-space: nowrap; }
 .hoja.perfil .reg.gana { color: #2f7d3a; }
 .hoja.perfil .reg.pierde { color: #b5452f; }

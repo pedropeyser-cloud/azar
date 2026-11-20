@@ -40,11 +40,22 @@ body.con-mesa-n .btn-pantalla { display: none; }
 .silla-n.en-turno, .yo-n.en-turno .mi-pie { border-color: var(--ambar); box-shadow: var(--glow); background: rgba(233,181,74,.06); }
 .cara-slot { position: relative; width: clamp(40px, 5.4vw, 84px); aspect-ratio: 1; }
 .cara-slot > svg { width: 100%; height: 100%; display: block; }
-.cara-slot .burbuja { left: 50%; top: 100%; transform-origin: top center; white-space: normal; width: max-content; max-width: min(220px, 56vw); font-size: 18px; line-height: 1.05; padding: 5px 10px 4px; translate: -50% 6px; }
-.silla-n:first-child .cara-slot .burbuja { left: 0; translate: 0 6px; }
-.silla-n:last-child .cara-slot .burbuja { left: auto; right: 0; translate: 0 6px; }
+.mesa-n .cara-slot .burbuja { left: 50%; top: 100%; transform-origin: top center; white-space: normal; width: max-content; max-width: min(220px, 56vw); font-size: 18px; line-height: 1.05; padding: 5px 10px 4px; translate: -50% 6px; }
+/* 2026-11-19: el globo de un rival salía debajo de su cara y tapaba su nombre y el de los de al lado; ahora sale debajo
+   de toda su silla (nombre y cartas a la vista) y no más ancho que la silla y media */
+.silla-n .cara-slot { position: static; }
+.silla-n .cara-slot > svg { position: relative; }
+.silla-n .cara-slot .burbuja { top: calc(100% - 4px); max-width: min(240px, max(150px, 130%)); font-size: clamp(15px, 1.25vw, 18px); z-index: 6; }
+.silla-n:first-child .cara-slot .burbuja { left: 4px; translate: 0 0; }
+.silla-n:last-child .cara-slot .burbuja { left: auto; right: 4px; translate: 0 0; }
+.silla-n:only-child .cara-slot .burbuja { left: 50%; right: auto; translate: -50% 0; }
 .silla-quien, .mi-quien { display: grid; justify-items: center; gap: 3px; min-width: 0; max-width: 100%; }
 .silla-quien .nom, .mi-quien .nom { font-size: clamp(13px, 1.1vw, 16px); max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* 2026-11-19: en el celular «El Relá…» y «Don Tra…»: las sillas se reparten todo el ancho y el nombre puede ir en dos renglones */
+@media (max-width: 600px) {
+  .silla-n { flex: 1 1 0; }
+  .silla-quien .nom { white-space: normal; text-align: center; line-height: 1.05; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+}
 .silla-extra, .mi-extra { display: flex; flex-wrap: wrap; justify-content: center; gap: 3px 6px; font-size: 11.5px; color: var(--texto-suave); }
 .silla-cartas { display: flex; justify-content: center; min-height: 20px; }
 
@@ -62,6 +73,8 @@ body.con-mesa-n .btn-pantalla { display: none; }
 
 .grito-n { position: absolute; left: 50%; top: 44%; translate: -50% -50%; z-index: 30; pointer-events: none; font: 700 clamp(40px, 6vw, 84px) var(--fd); color: var(--ambar); text-align: center; text-shadow: 0 4px 30px rgba(0,0,0,.7); opacity: 0; white-space: nowrap; }
 .grito-n.ver { animation: grito-n 1.5s ease-out both; }
+.revelar-culo, .vuelta-dc { transition: opacity .3s, translate .3s; }
+.mesa-n.gritando .revelar-culo, .mesa-n.gritando .vuelta-dc { opacity: 0; translate: 0 10px; }
 @keyframes grito-n { 0% { opacity: 0; transform: scale(.7); } 15% { opacity: 1; transform: scale(1.04); } 75% { opacity: 1; transform: none; } 100% { opacity: 0; transform: translateY(-14px); } }
 .aviso-n { position: absolute; left: 50%; bottom: clamp(150px, 26vh, 260px); translate: -50% 0; z-index: 30; pointer-events: none; padding: 8px 16px; border-radius: 99px; background: var(--papel); color: var(--tinta); font-weight: 600; font-size: 15px; opacity: 0; transition: opacity .2s; max-width: calc(100vw - 32px); text-align: center; }
 .aviso-n.ver { opacity: 1; }
@@ -78,7 +91,7 @@ body.con-mesa-n .btn-pantalla { display: none; }
 .porotos { display: inline-flex; align-items: center; gap: 3px; color: var(--papel); font-weight: 700; }
 .poroto { width: 15px; height: 11px; fill: #E9DCC3; stroke: #8A6A3E; stroke-width: 1; }
 .porotos b { font-size: 13px; }
-.tag-banca { padding: 1px 7px; border-radius: 99px; background: var(--ambar); color: var(--tinta); font-weight: 800; font-size: 10.5px; letter-spacing: .06em; text-transform: uppercase; }
+.tag-banca { padding: 1px 7px; border-radius: 99px; background: var(--ambar); color: var(--tinta); font-weight: 800; font-size: 11.5px; letter-spacing: .06em; text-transform: uppercase; }
 .siete .apuesta { white-space: nowrap; padding: 1px 7px; border-radius: 99px; border: 1px solid var(--ambar); color: var(--ambar); font-weight: 700; }
 .siete .a-la-vista { color: var(--gris); }
 .siete .est { color: var(--texto-suave); font-style: italic; }
@@ -120,7 +133,7 @@ body.con-mesa-n .btn-pantalla { display: none; }
   .controles-n .boton { flex: 1; }
   .ctrl-nota { text-align: center; }
   .siete .centro-n { flex-direction: column; gap: 12px; }
-  .silla-extra { font-size: 10.5px; }
+  .silla-extra { font-size: 11.5px; }
   .fichas { gap: 6px; } .ficha { width: 46px; height: 46px; }
 }
 
@@ -163,29 +176,33 @@ body.con-mesa-n .btn-pantalla { display: none; }
 .num.si { background: var(--ambar); color: var(--tinta); border-color: var(--ambar); }
 .boton.desconfio { background: linear-gradient(180deg, #EE8C5F, #C9572D); color: var(--tinta); border-color: #E07A4F; font-family: var(--fd); font-weight: 700; font-size: 22px; }
 .boton.confio { font-family: var(--fd); font-size: 20px; }
+/* sin cartas elegidas, «Tirar» es una indicación, no un botón dorado apagado */
+.culo .controles-n .tirar:disabled { background: transparent; border: 1px dashed var(--linea); color: var(--texto-suave); font-size: 15px; box-shadow: none; opacity: 1; }
 @media (max-width: 700px) {
   .culo .centro-n { flex-direction: column; gap: 10px; }
-  .mano-culo .carta-s + .carta-s { margin-left: calc(clamp(46px, 4.6vw, 80px) * -0.55); }
+  /* 2026-11-19: la mano se apretaba en 230 px aunque sobraba ancho: ahora ocupa todo el renglón y se pisa lo justo */
+  .mano-culo { --w: clamp(48px, 14vw, 62px); flex-wrap: nowrap; padding: 18px 12px 0; width: 100%; }
+  .mano-culo .carta-s { width: var(--w); flex: none; }
+  .mano-culo .carta-s + .carta-s { margin-left: clamp(calc(var(--w) * -0.8), calc((100% - var(--w)) / max(1, var(--n) - 1) - var(--w)), 4px); }
   .numeros { justify-content: center; }
   .num { width: 34px; height: 38px; font-size: 15px; }
 }
 
-/* ---------- desconfío (dados «Eclipse», 2026-11-18) ---------- */
+/* ---------- desconfío (dados «Eclipse», 2026-11-18; manos de póker y un solo cubilete, 2026-11-19) ---------- */
 .desconfio { --dado: clamp(40px, min(10.5vw, 7.4dvh), 70px); }
 .desconfio .dado { display: block; width: var(--dado); height: var(--dado); flex: none; transition: transform .25s, opacity .25s; }
-.desconfio .dado.mini { width: clamp(18px, min(4.6vw, 2.8dvh), 28px); height: clamp(18px, min(4.6vw, 2.8dvh), 28px); }
-.desconfio .dado.dc-cuenta { transform: translateY(-4px); filter: drop-shadow(0 0 6px rgba(233,181,74,.55)); }
-.desconfio .dado.dc-apagado { opacity: .42; }
 .desconfio .cubilete { display: block; }
 .desconfio .cubilete.chico { width: clamp(34px, min(7vw, 5.4dvh), 58px); height: auto; aspect-ratio: 100 / 110; }
 .desconfio .cubilete.chico.pensando { animation: pensar-dc 1.6s ease-in-out infinite; transform-origin: 50% 90%; }
 @keyframes pensar-dc { 0%, 100% { transform: rotate(0); } 50% { transform: rotate(-4deg); } }
-.desconfio .dados-silla { display: flex; flex-wrap: wrap; justify-content: center; gap: 3px; max-width: 100%; }
-.desconfio .cuantos-dados { font-weight: 700; color: var(--papel); }
-.desconfio .dijo { max-width: 100%; text-align: center; line-height: 1.2; padding: 1px 7px; border-radius: 99px; border: 1px solid var(--ambar); color: var(--ambar); font-weight: 700; }
 .desconfio .est.fuera { color: var(--gris); font-style: italic; }
+/* vidas: tres soles; el perdido queda como anillo apagado */
+.vidas-dc { display: inline-flex; gap: 4px; align-items: center; vertical-align: middle; }
+.vidas-dc i { width: 11px; height: 11px; border-radius: 50%; border: 1.5px solid rgba(199,204,228,.35); }
+.vidas-dc i.si { border-color: #F4CE76; background: radial-gradient(circle at 40% 38%, #FFF1C7, #E9B54A 60%, #b98522); box-shadow: 0 0 6px rgba(233,181,74,.5); }
+.puntos-dc { font-weight: 700; color: var(--ambar); }
 
-.desconfio .mi-zona { gap: clamp(10px, 2vw, 22px); align-items: center; }
+.desconfio .mi-zona { gap: clamp(10px, 2vw, 22px); align-items: center; flex-wrap: wrap; justify-content: center; }
 .cubo-mio { background: none; border: 0; padding: 0; cursor: pointer; border-radius: 16px; flex: none; }
 .cubo-mio .cubilete { width: clamp(62px, min(14vw, 11dvh), 104px); height: auto; aspect-ratio: 100 / 110; transition: filter .2s; }
 .cubo-mio:hover .cubilete { filter: brightness(1.2) drop-shadow(0 0 10px rgba(233,181,74,.35)); }
@@ -196,51 +213,66 @@ body.con-mesa-n .btn-pantalla { display: none; }
 @keyframes sacudir-dc { 0%, 100% { transform: none; } 25% { transform: rotate(-12deg) translateY(-8px); } 55% { transform: rotate(10deg) translateY(-12px); } 80% { transform: rotate(-5deg) translateY(-4px); } }
 .mis-dados { display: flex; flex-wrap: wrap; gap: clamp(6px, 1vw, 12px); justify-content: center; align-items: center; min-height: var(--dado); transition: opacity .2s; }
 .mis-dados.tapados .dado { opacity: 0; }
-.mis-dados .toca { color: var(--texto-suave); font-size: 15px; max-width: 22ch; }
+.mis-dados .toca { color: var(--texto-suave); font-size: 15px; max-width: 26ch; }
 .mis-dados.caen .dado { animation: caer-dc .32s ease-out both; }
-.mis-dados.caen .dado:nth-child(2) { animation-delay: .04s; } .mis-dados.caen .dado:nth-child(3) { animation-delay: .08s; }
-.mis-dados.caen .dado:nth-child(4) { animation-delay: .12s; } .mis-dados.caen .dado:nth-child(5) { animation-delay: .16s; }
+.mis-dados.caen > :nth-child(2) .dado, .mis-dados.caen > .dado:nth-child(2) { animation-delay: .04s; }
+.mis-dados.caen > :nth-child(3) .dado, .mis-dados.caen > .dado:nth-child(3) { animation-delay: .08s; }
+.mis-dados.caen > :nth-child(4) .dado, .mis-dados.caen > .dado:nth-child(4) { animation-delay: .12s; }
+.mis-dados.caen > :nth-child(5) .dado, .mis-dados.caen > .dado:nth-child(5) { animation-delay: .16s; }
 @keyframes caer-dc { from { opacity: 0; transform: translateY(-14px) rotate(-20deg); } to { opacity: 1; transform: none; } }
-.sin-dados { color: var(--texto-suave); font-style: italic; }
+/* los dados que te pasaron: tocás los que vuelven a tirarse y bajan hacia el cubilete */
+.dado-dc { display: block; padding: 0; border: 0; background: none; border-radius: 22%; cursor: pointer; transition: transform .2s, opacity .2s; }
+.dado-dc:focus-visible { outline: 2px solid var(--ambar); outline-offset: 3px; }
+.dado-dc.al-cubo { transform: translateY(10px) scale(.86); opacity: .5; }
+.dado-dc.al-cubo::after { content: "↺"; display: block; margin-top: 2px; text-align: center; font: 700 14px var(--fb); color: var(--ambar); line-height: 1; }
+.ayuda-dc { flex-basis: 100%; margin: 0; text-align: center; color: var(--texto-suave); font-size: 14px; }
+.espera-dc, .sin-dados { margin: 0; color: var(--texto-suave); font-style: italic; font-size: 15px; text-align: center; }
 
-.apuesta-dc, .vuelta-dc { display: grid; justify-items: center; gap: 6px; text-align: center; }
-.apuesta-dc small { color: var(--texto-suave); font-size: 13px; }
-.frase-dc { display: flex; align-items: center; gap: 12px; margin: 0; font: 600 clamp(36px, 5vw, 64px) var(--fd); line-height: 1; color: var(--papel); }
-.frase-dc .dado.frase { width: clamp(40px, 5vw, 64px); height: clamp(40px, 5vw, 64px); }
-.cadena-dc { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 12px; margin: 0; font-size: 12.5px; color: var(--gris); }
-.cadena-dc span { display: inline-flex; align-items: center; gap: 3px; }
-.cadena-dc .dado.mini { width: 16px; height: 16px; }
-.abre-dc { font: 600 clamp(26px, 3vw, 38px) var(--fd); color: var(--texto-suave); margin: 0; }
-.obligada-dc { margin: 8px 0 0; padding: 4px 12px; border-radius: 99px; border: 1px solid var(--brasa); color: var(--brasa); font-size: 13px; font-weight: 700; text-align: center; }
-.centro-n:has(.obligada-dc) { align-content: center; }
-.vuelta-dc { max-width: 560px; padding: 14px 18px; border-radius: 18px; background: rgba(10,12,22,.7); border: 1px solid var(--linea); }
+/* centro: el canto en pie, la cadena y la vuelta */
+.canto-dc, .vuelta-dc { display: grid; justify-items: center; gap: 6px; text-align: center; }
+.canto-dc small { color: var(--texto-suave); font-size: 13px; }
+.nombre-dc { margin: 0; font: 600 clamp(30px, 4.2vw, 58px) var(--fd); line-height: 1.02; color: var(--papel); text-wrap: balance; }
+.mano-dc { display: flex; gap: clamp(4px, .6vw, 8px); justify-content: center; }
+.desconfio .dado.frase { width: clamp(30px, min(4.2vw, 5.6dvh), 56px); height: clamp(30px, min(4.2vw, 5.6dvh), 56px); }
+.cadena-dc { display: flex; flex-wrap: wrap; justify-content: center; gap: 2px 14px; margin: 2px 0 0; font-size: 13px; color: var(--gris); max-width: 640px; }
+.decide-dc { margin: 2px 0 0; color: var(--ambar); font-weight: 700; font-size: 15px; }
+.abre-dc { font: 600 clamp(26px, 3vw, 38px) var(--fd); color: var(--papel); margin: 0; }
+.supera-dc { margin: 0; color: var(--texto-suave); font-size: 15px; text-wrap: balance; }
+.supera-dc b { color: var(--ambar); font-weight: 700; }
+.vuelta-dc { max-width: 600px; padding: 14px 18px; border-radius: 18px; background: rgba(10,12,22,.7); border: 1px solid var(--linea); }
 .vuelta-dc p { margin: 0; color: var(--texto-suave); font-size: 15px; }
-.vuelta-dc .hay { font: 600 clamp(24px, 3vw, 34px) var(--fd); color: var(--papel); }
-.vuelta-dc .hay b { color: var(--ambar); }
-.vuelta-dc .pierde-dc { font: 700 clamp(24px, 2.6vw, 34px) var(--fd); color: var(--ambar); }
+.vuelta-dc .hay { font: 600 clamp(22px, 2.8vw, 32px) var(--fd); color: var(--papel); }
+.vuelta-dc .pierde-dc { font: 700 clamp(20px, 2.3vw, 30px) var(--fd); color: var(--ambar); }
 .vuelta-dc.erra .pierde-dc { color: var(--brasa); }
 
+/* armar el canto */
 .armar-dc { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 8px; }
+.cantar-dados { display: flex; gap: 4px; }
+.dado-canto { padding: 2px; border-radius: 12px; border: 1px solid var(--linea); background: var(--superficie); cursor: pointer; }
+.dado-canto .dado { width: clamp(32px, 2.8vw, 42px); height: clamp(32px, 2.8vw, 42px); }
+.dado-canto:hover { border-color: var(--ambar); }
+.dado-canto:focus-visible { outline: 2px solid var(--ambar); outline-offset: 2px; }
 .paso-dc { display: flex; align-items: center; gap: 2px; border: 1px solid var(--linea); border-radius: 14px; background: var(--superficie); }
 .paso-dc button { width: 44px; height: 48px; border: 0; background: none; color: var(--papel); font: 700 22px var(--fb); border-radius: 12px; cursor: pointer; }
 .paso-dc button:disabled { opacity: .3; cursor: default; }
-.paso-dc b { min-width: 2ch; text-align: center; font: 700 26px var(--fd); color: var(--ambar); }
-.caras-dc { display: flex; gap: 4px; }
-.cara-dc { padding: 3px; border-radius: 12px; border: 2px solid transparent; background: none; cursor: pointer; }
-.cara-dc .dado { width: clamp(30px, 3vw, 42px); height: clamp(30px, 3vw, 42px); }
-.cara-dc.si { border-color: var(--ambar); background: rgba(233,181,74,.12); }
-.cara-dc:disabled { opacity: .25; cursor: default; }
-.controles-n .canto-desconfio { background: var(--brasa); border-color: var(--brasa); color: var(--tinta); }
-.controles-n .canto-confio { background: transparent; border-color: var(--ambar); color: var(--ambar); }
+.atajos-dc { display: flex; gap: 6px; }
+.desconfio .boton.chico { min-height: 40px; padding: 6px 14px; font-size: 14px; }
+.aviso-canto { flex-basis: 100%; margin: 0; text-align: right; font-size: 14px; font-weight: 700; }
+.aviso-canto.verdad { color: var(--ambar); }
+.aviso-canto.mentira { color: var(--brasa); }
+.aviso-canto.no { color: var(--gris); font-weight: 600; }
+.controles-n .canto-desconfio { background: var(--brasa); border-color: var(--brasa); color: var(--tinta); font-family: var(--fd); font-weight: 700; font-size: 20px; }
+.controles-n .canto-creo { background: transparent; border-color: var(--ambar); color: var(--ambar); font-family: var(--fd); font-size: 20px; }
+.controles-n .canto-creo:disabled { opacity: .35; }
 @media (max-width: 720px) {
   .desconfio .mi-pie { flex-wrap: wrap; }
   .desconfio .controles-n { flex-basis: 100%; justify-content: center; }
   .armar-dc { justify-content: center; }
-  .cara-dc .dado { width: 34px; height: 34px; }
+  .aviso-canto { text-align: center; }
   .desconfio .controles-n .boton { min-height: 46px; font-size: 16px; padding-inline: 14px; }
-  .desconfio .controles-n .apostar { flex-basis: 100%; }
-  .desconfio .controles-n .canto-confio, .desconfio .controles-n .canto-desconfio { flex: 1 1 0; }
-  .desconfio .dijo { font-size: 10.5px; padding: 1px 5px; }
+  .desconfio .controles-n .cantar { flex-basis: 100%; }
+  .desconfio .controles-n .canto-creo, .desconfio .controles-n .canto-desconfio { flex: 1 1 0; font-size: 18px; }
+  .vidas-dc i { width: 10px; height: 10px; }
 }
 
 /* ---------- generala (2026-11-19: los dados «Eclipse» del desconfío, la bandeja y la planilla) ---------- */
@@ -279,7 +311,7 @@ button.dado-g:focus-visible { outline: 2px solid var(--ambar); outline-offset: 3
 .ayuda-g { margin: 0; color: var(--texto-suave); font-size: 13.5px; text-align: center; max-width: 46ch; }
 .ayuda-g:empty { display: none; }
 
-.planilla-g { border-collapse: separate; border-spacing: 0; font-variant-numeric: tabular-nums; background: rgba(241,235,221,.04); border: 1px solid var(--linea); border-radius: 16px; overflow: hidden; align-self: center; }
+.planilla-g { border-collapse: separate; border-spacing: 0; font-variant-numeric: lining-nums tabular-nums; background: rgba(241,235,221,.04); border: 1px solid var(--linea); border-radius: 16px; overflow: hidden; align-self: center; }
 .planilla-g th, .planilla-g td { height: clamp(22px, 3.6dvh, 42px); padding: 0 clamp(6px, .9vw, 16px); text-align: center; border-bottom: 1px solid rgba(199,204,228,.1); font-size: clamp(13px, 1.15vw, 20px); }
 .planilla-g thead th { font-weight: 600; color: var(--texto-suave); font-size: clamp(12.5px, .95vw, 16px); height: clamp(26px, 3.6dvh, 36px); }
 .planilla-g thead th span { display: block; max-width: 9ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-inline: auto; }

@@ -44,7 +44,8 @@ export async function iniciar(g) {
   $("#vista-vos").onclick = clicVos;
   // con link de invitación se queda en Jugar; si no, vuelve a la última pestaña
   const conLink = new URLSearchParams(location.search).has("sala") || new URLSearchParams(location.search).has("mesa");
-  irA(conLink ? "jugar" : leer("truco-pestana", "jugar"), true);
+  // ?ir=pulperia / ?ir=vos: el «Vos» de AZAR manda directo a la Tienda o a los Equipos (2026-11-19)
+  irA(conLink ? "jugar" : new URLSearchParams(location.search).get("ir") || leer("truco-pestana", "jugar"), true);
   N.on("sesion", () => { pintarTodo(); ponerNombre(); gloriaDelTutorial(); });
   N.on("conectados", (l) => { pintarConectados(l); if (vistaActual === "liga") pintarLiga(); });
   N.on("invitacion", mostrarInvitacion);
@@ -137,7 +138,7 @@ function pintarCabecera() {
     return;
   }
   const liga = G.ligaDe(p.elo);
-  el.innerHTML = `<button class="cab-yo" data-ir="vos" aria-label="Tu perfil">${avatar(p, 42)}<span class="cab-nombre">${nombreHTML(p)}</span></button>
+  el.innerHTML = `<a class="cab-yo" href="../../?tab=vos" aria-label="Tu perfil en AZAR">${avatar(p, 42)}<span class="cab-nombre">${nombreHTML(p)}</span></a>
     <span class="cab-chips">${G.tiene(p, "clasif") ? `<button class="chip-liga ${liga.metal}" data-ir="liga">${esc(liga.nombre)}</button>` : ""}
     <button class="chip-gloria" data-ir="pulperia" aria-label="${p.puntos} de gloria: ir a la Tienda">${SOL(16)}<b>${p.puntos}</b></button></span>`;
 }
@@ -611,51 +612,20 @@ function clicPartidas(e) {
 }
 
 // ================= Vos (perfil) =================
+// 2026-11-19 (Pedro: «unificá»): el perfil (tu cara, tus cifras, tu historial y tu cuenta) es uno solo y vive en AZAR
+// (nucleo/lobby.js, «Vos»). Esta pestaña del truco queda para lo que es solo del truco: los equipos y los bloqueados.
 async function pintarVos() {
   const el = $("#vista-vos"); if (!el) return;
   const p = N.miPerfil();
-  if (!p) { el.innerHTML = `<h2 class="tit-vista">Vos</h2>${tarjetaEntrar("Entrá para tener tu cara, tu título y tus equipos.")}`; return; }
-  const liga = G.ligaDe(p.elo), e = p.estilo || {}, pc = C.pintaCara(p), ac = accDe(p);
-  const slot = (k, rotulo, valor, prod) => `<button class="slot${valor ? "" : " vacio"}" data-ficha="${prod}"><span class="slot-ilus">${ilus(C.producto(prod), p, 44)}</span><span class="slot-t"><small>${rotulo}</small><b>${valor ? esc(valor) : "nada"}</b></span></button>`;
-  const somb = pc.sombrero || (ac.gorra ? "gorra" : null);
-  const slots = [
-    slot("cara", "Cara", `cara ${C.formaDe(p) + 1}`, "cara"),
-    slot("sombrero", "Sombrero", somb ? C.producto(somb).nombre : "", somb || "gorra"),
-    slot("ojos", "Ojos", pc.ojos ? C.producto(pc.ojos).nombre : "", pc.ojos || "anteojos"),
-    slot("boca", "Bigote", pc.boca ? C.producto(pc.boca).nombre : "", "bigote"),
-    slot("peluca", "Peluca", e.peluca && G.tiene(p, "peluca") ? G.NOMBRE_COLOR[e.peluca] : "", "peluca"),
-    slot("dorso", "Dorso", C.dorsoDe(p) !== "clasico" ? C.DORSOS[C.dorsoDe(p)] : "el de siempre", C.dorsoDe(p) !== "clasico" ? "dorso_" + C.dorsoDe(p) : "dorso_rayado"),
-    slot("pano", "Mesa", C.PANOS[C.panoDe(p)], C.panoDe(p) !== "madera" ? "pano_" + C.panoDe(p) : "pano_verde"),
-    slot("tanteador", "Tanteador", C.usaPorotos(p) ? "porotos" : "fósforos", "porotos"),
-    slot("titulo", "Título", G.tiene(p, "titulo") ? p.titulo || "" : "", p.titulo && !G.TITULOS.includes(p.titulo) ? "libre" : "titulo"),
-  ].join("");
-  el.innerHTML = `<div class="vos-heroe">
-      <button class="vos-cara" data-ficha="cara" aria-label="Cambiar tu cara">${avatar(p, 124)}<span class="lapiz" aria-hidden="true">✎</span></button>
-      <h2 class="vos-n">${nombreHTML(p)}</h2>
-      <div class="vos-chips"><button class="chip-gloria" data-ir="pulperia">${SOL(15)}<b>${p.puntos}</b> de gloria</button>${G.tiene(p, "clasif") ? `<button class="chip-liga ${liga.metal}" data-ir="liga">${esc(liga.nombre)}</button>` : ""}</div>
-    </div>
-    <div data-vos-cifras class="cifras4"><div><b>·</b><span>jugadas</span></div><div class="g"><b>·</b><span>ganadas</span></div><div class="p"><b>·</b><span>perdidas</span></div><div><b>·</b><span>racha</span></div></div>
-    <div data-vos-estilo></div>
-    <section><h3 class="tit-sec">Lo que tenés puesto <button class="b chico-e" data-ir="pulperia">Tienda ›</button></h3><div class="slots">${slots}</div></section>
-    <section data-vos-equipos><h3 class="tit-sec">Equipos</h3><p class="cargando">…</p></section>
-    <section class="tu-cuenta"><h3 class="tit-sec">Tu cuenta</h3>
-      <div data-bloqueados></div>
-      <button class="b claro ancho salir" data-salir-cuenta>Salir de la cuenta</button>
-      <p class="legales"><a href="terminos.html" target="_blank" rel="noopener">Términos de uso</a> · <a href="privacidad.html" target="_blank" rel="noopener">Privacidad</a> · <button type="button" class="enlace peligro" data-borrar-cuenta>Borrar mi cuenta</button></p>
-    </section>`;
-  const [partidas, equipos, bloq] = await Promise.all([N.misPartidas().catch(() => []), N.misEquipos().catch(() => []), N.misBloqueos().catch(() => [])]);
+  if (!p) { el.innerHTML = `<h2 class="tit-vista">Equipos</h2>${tarjetaEntrar("Entrá para armar equipos y desafiar a otros de igual a igual.")}`; return; }
+  el.innerHTML = `<h2 class="tit-vista">Equipos</h2>
+    <a class="ir-azar-vos" href="../../?tab=vos">${avatar(p, 40)}<span><b>Tu perfil está en AZAR</b><small>tus partidas de todos los juegos, tu cuenta y cerrar sesión</small></span><i aria-hidden="true">›</i></a>
+    <section data-vos-equipos><p class="cargando">…</p></section>
+    <section class="tu-cuenta"><div data-bloqueados></div></section>`;
+  const [equipos, bloq] = await Promise.all([N.misEquipos().catch(() => []), N.misBloqueos().catch(() => [])]);
   if (vistaActual !== "vos") return;
   const eb = el.querySelector("[data-bloqueados]");
-  if (eb) eb.innerHTML = bloq.length ? `<p class="nota-eq">Bloqueados: no te aparecen ni te pueden invitar.</p><ul class="bloqueados">${bloq.map((b) => `<li><span>${esc(b.usuario)}</span><button class="b chico" data-desbloquear="${esc(b.id)}">Desbloquear</button></li>`).join("")}</ul>` : "";
-  partidasCache = partidas;
-  const r = N.resumir(partidas);
-  let racha = 0; for (const x of partidas) { if (x.gano) racha++; else break; }
-  const cif = el.querySelector("[data-vos-cifras]");
-  if (cif) cif.innerHTML = `<div><b>${r.jugadas}</b><span>jugadas</span></div><div class="g"><b>${r.ganadas}</b><span>ganadas</span></div><div class="p"><b>${r.perdidas}</b><span>perdidas</span></div><div><b>${racha}</b><span>racha</span></div>`;
-  const est = G.tiene(p, "insignia") ? G.estiloDeJuego(G.sumarEstilos(partidas.map((x) => x.estilo))) : null;
-  const ee = el.querySelector("[data-vos-estilo]");
-  if (ee) ee.innerHTML = est ? `<div class="estilo-juego"><small>tu estilo de juego</small><b>${esc(est.nombre)}</b><p>${esc(est.que)}</p></div>`
-    : `<button class="estilo-juego bloq" data-ficha="insignia"><small>tu estilo de juego</small><b>Se descubre con la insignia (50 de gloria)</b></button>`;
+  if (eb) eb.innerHTML = bloq.length ? `<h3 class="tit-sec">Bloqueados</h3><p class="nota-eq">No te aparecen ni te pueden invitar.</p><ul class="bloqueados">${bloq.map((b) => `<li><span>${esc(b.usuario)}</span><button class="b chico" data-desbloquear="${esc(b.id)}">Desbloquear</button></li>`).join("")}</ul>` : "";
   pintarEquipos(el.querySelector("[data-vos-equipos]"), p, equipos);
 }
 
@@ -675,7 +645,7 @@ function pintarEquipos(sec, p, equipos) {
       ${lleno ? `<button class="b fuerte ancho" data-desafiar="${esc(e.id)}">Jugar contra otro equipo</button>` : `<p class="nota-eq">Cuando estén los ${e.tamano}, pueden desafiar a otro equipo.</p>`}
       ${yoCreo ? `<button class="b chico" data-borrar="${esc(e.id)}">Borrar el equipo</button>` : `<button class="b chico" data-dejar="${esc(e.id)}">Salir del equipo</button>`}</div>`;
   }).join("");
-  sec.innerHTML = `<h3 class="tit-sec">Equipos</h3>${eqs || `<p class="vacio">No estás en ningún equipo. Armá uno y desafíen a otros de igual a igual.</p>`}
+  sec.innerHTML = `<h3 class="tit-sec">Tus equipos</h3>${eqs || `<p class="vacio">No estás en ningún equipo. Armá uno y desafíen a otros de igual a igual.</p>`}
     <form class="nuevo-equipo" data-nuevo-equipo><input type="text" name="nombre" maxlength="24" placeholder="Nombre del equipo nuevo" required>
       <div class="segmentado chico-seg" role="radiogroup"><label><input type="radio" name="tamano" value="2" checked><span>de a 2</span></label><label><input type="radio" name="tamano" value="3"><span>de a 3</span></label></div>
       <button class="b">Armar el equipo</button></form>`;

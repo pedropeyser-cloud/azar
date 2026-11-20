@@ -1,5 +1,5 @@
 // Dados y cubilete «Eclipse» del Desconfío (dirección B de htmls/dados-direcciones.html, elegida por Pedro el 2026-11-18):
-// dados azul esmaltado con puntos de oro; el as es un sol eclipsado (el anillo de los bots), por eso se lee como comodín.
+// dados azul esmaltado con puntos de oro; el as es un sol eclipsado (el anillo de los bots).
 // El cubilete es negro con la boca encendida, como un eclipse visto de costado.
 const PIPS = { 2: [[28, 28], [72, 72]], 3: [[28, 28], [50, 50], [72, 72]], 4: [[28, 28], [72, 28], [28, 72], [72, 72]], 5: [[28, 28], [72, 28], [50, 50], [28, 72], [72, 72]], 6: [[28, 26], [72, 26], [28, 50], [72, 50], [28, 74], [72, 74]] };
 const NOM = { 1: "as", 2: "dos", 3: "tres", 4: "cuatro", 5: "cinco", 6: "seis" };

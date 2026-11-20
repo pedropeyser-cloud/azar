@@ -9,9 +9,9 @@
 .canasta .franja.arriba { padding-top: max(12px, env(safe-area-inset-top)); }
 .canasta .franja.abajo { padding-top: 4px; padding-bottom: max(10px, env(safe-area-inset-bottom)); }
 .canasta .franja .cara-slot { width: clamp(40px, 11vw, 54px); }
-.canasta .franja .puntos { flex: none; display: grid; justify-items: center; line-height: .82; min-width: 54px; }
-.canasta .puntos b { font-family: var(--fd); font-weight: 700; font-size: clamp(32px, 8.4vw, 44px); color: var(--papel); font-variant-numeric: tabular-nums; }
-.canasta .puntos small { font-family: var(--fb); font-size: 10px; color: var(--gris); }
+.canasta .franja .puntos { flex: none; display: grid; justify-items: center; gap: 3px; line-height: .9; min-width: 54px; }
+.canasta .puntos b { font-family: var(--fd); font-weight: 700; font-size: clamp(32px, 8.4vw, 44px); color: var(--papel); font-variant-numeric: lining-nums tabular-nums; }
+.canasta .puntos small { font-family: var(--fb); font-size: 11px; color: var(--gris); }
 .canasta .puntos.cerca b, .canasta .mios-puntos b { color: var(--ambar); }
 .canasta .cara-slot.turno::after { content: ""; position: absolute; inset: -5px; border-radius: 50%; border: 2px solid var(--ambar); box-shadow: 0 0 16px 3px rgba(233,181,74,.45); animation: pide 1.3s ease-in-out infinite; pointer-events: none; }
 
@@ -21,9 +21,10 @@
 .canasta .zona { position: relative; min-height: 0; display: flex; flex-direction: column; gap: 3px; }
 .canasta .mia-zona { border-radius: 14px; transition: box-shadow .12s, background .12s; }
 .canasta.mi-turno .mia-zona.encima { box-shadow: 0 0 0 2px rgba(233,181,74,.7), 0 0 22px 4px rgba(233,181,74,.25); background: rgba(233,181,74,.06); }
-.canasta .zona-info { display: flex; align-items: center; justify-content: space-between; gap: 8px; height: 26px; flex: none; font-family: var(--fb); font-size: 10.5px; color: var(--gris); padding: 0 4px; }
+.canasta .zona-info { display: flex; align-items: center; justify-content: space-between; gap: 8px; height: 26px; flex: none; font-family: var(--fb); font-size: 11.5px; color: var(--gris); padding: 0 4px; }
 .canasta .mis-canastas { color: var(--ambar); }
-.canasta .rojos { display: flex; gap: 3px; }
+.canasta .rojos { display: flex; gap: 3px; align-items: center; }
+.canasta .rojos-t { font-size: 11.5px; color: var(--gris); margin-right: 4px; white-space: nowrap; }
 .canasta .rojo { width: 17px; border-radius: 4px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,.5); }
 .canasta .rojo svg { display: block; width: 100%; height: auto; }
 
@@ -32,7 +33,7 @@
 .canasta .juegos::-webkit-scrollbar { display: none; }
 .canasta .juego { --paso: calc(var(--jw) * .34); position: relative; width: var(--jw); height: calc(var(--jw) * 860 / 600 + (var(--n) - 1) * var(--paso)); padding: 0; border: 0; background: none; border-radius: 5px; flex: none; }
 .canasta .juego .carta { position: absolute; left: 0; top: calc(var(--k) * var(--paso)); width: 100%; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,.45); }
-.canasta .juego .cuenta { position: absolute; right: -5px; bottom: -6px; z-index: 5; font-style: normal; font-family: var(--fb); font-size: 10px; font-weight: 700; background: var(--noche); color: var(--papel); border: 1px solid var(--linea); border-radius: 8px; padding: 0 4px; line-height: 15px; }
+.canasta .juego .cuenta { position: absolute; right: -5px; bottom: -6px; z-index: 5; font-style: normal; font-family: var(--fb); font-size: 11px; font-weight: 700; background: var(--noche); color: var(--papel); border: 1px solid var(--linea); border-radius: 8px; padding: 0 4px; line-height: 15px; }
 /* canasta cerrada: tres cartas apretadas y el rótulo; la pura con luz ámbar */
 .canasta .juego.canasta { --paso: calc(var(--jw) * .12); }
 .canasta .juego.canasta .rotulo { position: absolute; left: 50%; bottom: -7px; transform: translateX(-50%); z-index: 5; font-style: normal; font-family: var(--fd); font-weight: 700; font-size: 15px; line-height: 1; padding: 1px 6px 0; border-radius: 8px; white-space: nowrap; }
@@ -53,7 +54,7 @@
 .canasta .mazo-c > b { left: 50%; top: 50%; transform: translate(-50%, -50%); }
 .canasta .pozo-c > b { right: -10px; top: -12px; font-family: var(--fb); font-size: 12px; background: var(--ambar); color: var(--tinta); text-shadow: none; padding: 1px 6px; border-radius: 10px; }
 .canasta .pozo-c > b:empty { display: none; }
-.canasta .mazo-c small, .canasta .pozo-c small { position: absolute; left: -12px; right: -12px; top: calc(100% + 3px); text-align: center; font-family: var(--fb); font-size: 9.5px; color: var(--gris); white-space: nowrap; }
+.canasta .mazo-c small, .canasta .pozo-c small { position: absolute; left: -12px; right: -12px; top: calc(100% + 3px); text-align: center; font-family: var(--fb); font-size: 11px; color: var(--gris); white-space: nowrap; }
 .canasta .mazo-c.vacio .pila-dorsos { opacity: .18; }
 .canasta .pozo-c .tope .carta { position: absolute; inset: 0; width: 100%; }
 .canasta .pozo-c .debajo .capa { transform: translate(-3px, 3px) rotate(-5deg); }

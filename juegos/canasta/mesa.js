@@ -215,7 +215,7 @@ export function montarMesa(cont, { fuente, salir, otraDificultad, alFin }) {
           ${can ? `<i class="rotulo">${pura ? "pura" : "impura"}</i>` : g.cartas.length >= 4 ? `<i class="cuenta">${g.cartas.length}</i>` : ""}
         </button>`;
       }).join("") || `<p class="vacio">${j === yo ? (V.bajo[yo] ? "" : `primera bajada: ${V.minimos[yo]} puntos`) : "todavía no bajó"}</p>`;
-      rojosEl[j].innerHTML = V.rojos[j].map((c) => `<span class="rojo" title="3 rojo">${frente(c)}</span>`).join("");
+      rojosEl[j].innerHTML = (V.rojos[j].length ? `<small class="rojos-t">${V.rojos[j].length === 1 ? "3 rojo" : `${V.rojos[j].length} tres rojos`}</small>` : "") + V.rojos[j].map((c) => `<span class="rojo" title="3 rojo">${frente(c)}</span>`).join("");
     }
     ajustarJuegos();
     const can = (j) => V.juegos[j].filter((g) => g.cartas.length >= CANASTA).length;

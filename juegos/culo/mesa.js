@@ -52,7 +52,7 @@ export function montarMesa(cont, { fuente, salir, otraMesa }) {
     p.centro.innerHTML = centro;
 
     // mi mano
-    p.miZona.innerHTML = `<div class="mano-culo" role="group" aria-label="Tu mano">${v.mano.map((c) => carta(c, elegidas.includes(c) ? "elegida" : "", `data-c="${c}" role="button" tabindex="0" aria-pressed="${elegidas.includes(c)}" aria-label="${c}"`)).join("")}</div>`;
+    p.miZona.innerHTML = `<div class="mano-culo" role="group" aria-label="Tu mano" style="--n:${v.mano.length}">${v.mano.map((c) => carta(c, elegidas.includes(c) ? "elegida" : "", `data-c="${c}" role="button" tabindex="0" aria-pressed="${elegidas.includes(c)}" aria-label="${c}"`)).join("")}</div>`;
     p.miExtra.innerHTML = `<span class="cuenta-cartas">${v.mano.length} ${v.mano.length === 1 ? "carta" : "cartas"}</span>${v.fuera.includes(yo) ? `<span class="est fuera">afuera ${v.fuera.indexOf(yo) + 1}º</span>` : v.pendiente === yo ? `<span class="est ultimas">tiraste las últimas</span>` : ""}`;
 
     // controles

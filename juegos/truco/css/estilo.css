@@ -18,7 +18,10 @@
 }
 * { box-sizing: border-box; margin: 0; }
 html, body { height: 100%; }
-body { background: var(--noche); color: var(--papel); font-family: var(--fb); font-variant-numeric: tabular-nums; -webkit-font-smoothing: antialiased; overflow: hidden; -webkit-tap-highlight-color: transparent; }
+/* cifras de línea en todo (el 1 de la Cormorant parecía una «ı»): el atajo font: resetea font-feature-settings en
+   Chrome, por eso va con !important en todos los elementos y no solo heredado del body (2026-11-19) */
+*, *::before, *::after { font-feature-settings: "lnum" 1 !important; }
+body { background: var(--noche); color: var(--papel); font-family: var(--fb); font-variant-numeric: lining-nums tabular-nums; -webkit-font-smoothing: antialiased; overflow: hidden; -webkit-tap-highlight-color: transparent; }
 button { font: inherit; color: inherit; cursor: pointer; touch-action: manipulation; }
 [hidden] { display: none !important; }
 :focus-visible { outline: 2px solid var(--ambar); outline-offset: 2px; }
@@ -51,7 +54,7 @@ input[type=text] { background: var(--superficie); border: 1px solid var(--linea)
 input[type=text]:focus { border-color: var(--ambar); outline: none; }
 .segmentado { display: grid; grid-template-columns: 1fr 1fr; background: var(--superficie); border: 1px solid var(--linea); border-radius: 12px; padding: 4px; gap: 4px; }
 .segmentado button { border: 0; background: transparent; border-radius: 9px; padding: 10px 6px; min-height: 44px; color: var(--texto-suave); line-height: 1.1; }
-.segmentado button small { display: block; font-family: var(--fb); font-size: 10.5px; color: var(--gris); margin-top: 2px; }
+.segmentado button small { display: block; font-family: var(--fb); font-size: 11.5px; color: var(--gris); margin-top: 2px; }
 .segmentado button[aria-pressed=true] { background: var(--papel); color: var(--tinta); }
 .segmentado button[aria-pressed=true] small { color: #5b5649; }
 .b { border: 1px solid var(--linea); background: var(--superficie); border-radius: 12px; padding: 11px 16px; min-height: 46px; font-size: 16px; font-weight: 500; transition: transform .12s, background .2s; }
@@ -177,8 +180,8 @@ input[type=text]:focus { border-color: var(--ambar); outline: none; }
 /* en celular angosto la etiqueta «mano» no le come el nombre al rival */
 @media (max-width: 430px) {
   .barra { gap: 6px; }
-  .barra .chip { flex: none; font-size: 10px; padding: 1px 6px; }
-  .barra .rival .nombre { min-width: 5.2em; }
+  .barra .chip { flex: none; font-size: 11px; padding: 1px 6px; }
+  .barra .rival .nombre { min-width: 5.2em; font-size: 15px; letter-spacing: -.01em; }
 }
 @media (min-width: 1100px) { .nota { left: calc(50% - 510px); max-width: 190px; font-size: 23px; } }
 
@@ -189,3 +192,5 @@ input[type=text]:focus { border-color: var(--ambar); outline: none; }
 .volver-azar span { font-family: var(--fd); font-size: 16px; letter-spacing: .32em; color: var(--fg); }
 .volver-azar svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 .volver-azar:hover { border-color: var(--acc); color: var(--acc); }
+/* 2026-11-19: la píldora tapaba tu nombre y tu título en la cabecera: la cabecera le deja su lugar */
+.inicio > .volver-azar ~ .cabecera, .inicio > .cabecera { padding-left: calc(max(12px, env(safe-area-inset-left)) + 120px); min-height: 60px; }

@@ -28,7 +28,7 @@
 .asiento.ellos .etq i { background: #5b616c; }
 .asiento.yo .etq { color: var(--papel); }
 .asiento .chips { display: flex; gap: 3px; min-height: 0; }
-.mini-chip { font-family: var(--fb); font-size: 9.5px; line-height: 1.5; color: var(--ambar); border: 1px solid rgba(233,181,74,.5); border-radius: 99px; padding: 0 5px; white-space: nowrap; }
+.mini-chip { font-family: var(--fb); font-size: 11px; line-height: 1.5; color: var(--ambar); border: 1px solid rgba(233,181,74,.5); border-radius: 99px; padding: 0 5px; white-space: nowrap; }
 .asiento .quedan { display: flex; gap: 2px; }
 .asiento .quedan span { width: 7px; height: 10px; border-radius: 1.5px; background: var(--dorso); border: 1px solid #454c59; }
 .asiento .glifo { position: absolute; top: -10px; right: -14px; font-family: var(--fd); font-weight: 700; font-size: 26px; color: var(--ambar); text-shadow: 0 2px 8px #000; animation: glifo 1s ease forwards; pointer-events: none; }

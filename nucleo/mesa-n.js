@@ -78,7 +78,7 @@ export function montarMesaN(cont, { fuente, salir, otraMesa, clase, titulo, pint
     }
   }
 
-  let tAviso = 0, tGrito = 0;
+  let tAviso = 0, tGrito = 0, tGritando = 0;
   const partes = {
     mesa, yo, n, rel, nombre, silla,
     sillaCartas: (j) => (j === yo ? $(".mi-zona") : silla(j).querySelector(".silla-cartas")),
@@ -86,7 +86,15 @@ export function montarMesaN(cont, { fuente, salir, otraMesa, clase, titulo, pint
     centro: $(".centro-n"), miZona: $(".mi-zona"), miExtra: $(".mi-extra"), controles: $(".controles-n"),
     estado: (txt) => { $(".estado-n").textContent = txt; },
     aviso(txt, ms = 2600) { const a = $(".aviso-n"); a.textContent = txt; a.classList.add("ver"); clearTimeout(tAviso); tAviso = setTimeout(() => a.classList.remove("ver"), ms); },
-    grito(txt, ms = 1500) { const g = $(".grito-n"); g.textContent = txt; g.classList.remove("ver"); void g.offsetWidth; g.classList.add("ver"); clearTimeout(tGrito); tGrito = setTimeout(() => g.classList.remove("ver"), ms); },
+    // mientras dura el grito, lo que explica la jugada (la vuelta del culo, la del Desconfío) espera abajo: si no, el
+    // grito grande se pintaba encima de su primera línea (auditoría 2026-11-19)
+    grito(txt, ms = 1500) {
+      const g = $(".grito-n"); g.textContent = txt; g.classList.remove("ver"); void g.offsetWidth; g.classList.add("ver");
+      mesa.classList.add("gritando");
+      clearTimeout(tGrito); clearTimeout(tGritando);
+      tGritando = setTimeout(() => mesa.classList.remove("gritando"), Math.round(ms * 0.7));
+      tGrito = setTimeout(() => g.classList.remove("ver"), ms);
+    },
     /** Marca de quién es el turno (borde de oro en su silla). */
     turno(j) { mesa.querySelectorAll(".silla-n, .yo-n").forEach((x) => x.classList.toggle("en-turno", x === silla(j))); },
     enviar: async (accion) => { const r = await fuente.enviar(accion); if (r) { sonido.play("rechazo"); partes.aviso(r.mensaje); } return r; },

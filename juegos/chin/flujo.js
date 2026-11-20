@@ -58,7 +58,7 @@ export function menu(app, ctx) {
         <li>Para ordenar tu fila, arrastrá una carta sobre otra y cambian de lugar (si son del mismo número, se apilan).</li>
         <li>La rapidez de la mano cuenta: todo se arrastra. En la compu se juega en pantalla completa y espacio = «¡CHIN!».</li>
       </ul></details>
-      <button class="boton suave ver-tutorial">Ver el tutorial (40 s)</button>
+      <button class="boton suave ver-tutorial">${tutorialVisto() ? "Ver el tutorial (40 s)" : "¿Primera vez? Mirá el tutorial (40 s)"}</button>
       <button class="boton suave volver">← Volver al inicio</button>
     </main>`;
   app.querySelectorAll(".fmt").forEach((b) => b.addEventListener("click", () => {
@@ -96,10 +96,11 @@ export function tutorial(app, ctx, despues) {
 }
 
 /** `opciones.tutorial = false` saltea el tutorial de la primera vez (las pruebas con ?auto=1 lo usan). */
-export function contraBot(app, ctx, dif, { tutorial: conTutorial = true } = {}) {
+// 2026-11-19 (Pedro): el tutorial es opcional; ya no arranca solo la primera vez, se ve con «Ver el tutorial».
+export function contraBot(app, ctx, dif, { tutorial: conTutorial = false } = {}) {
   if (dif && DIFS.some((d) => d.k === dif)) dificultad = dif;
   sonido.despertar();
-  // la primera partida arranca con el tutorial (una sola vez)
+  // con `tutorial: true` (las pruebas con &tutorial=1) la primera partida arranca con el tutorial
   if (conTutorial && !tutorialVisto()) { tutorial(app, ctx, () => contraBot(app, ctx, dificultad, { tutorial: false })); return; }
   cerrar();
   const p = ctx.yo();

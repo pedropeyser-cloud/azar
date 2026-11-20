@@ -95,13 +95,45 @@ export async function confirmarPartidaJuego(id, ganador) {
     await new Promise((r) => setTimeout(r, 2500));
   }
 }
-/** Mis últimas partidas confirmadas de la plataforma. */
+/** Mis últimas partidas confirmadas de la plataforma (chin, escoba, canasta), con los usuarios de la mesa en `rivales`. */
 export async function misPartidasJuego(limite = 30) {
   if (!perfil) return [];
   if (window.__NUBE_FALSA?.misPartidasJuego) return window.__NUBE_FALSA.misPartidasJuego();
-  const { data } = await cli.from("partida_juego_jugadores").select("partida, lado, gano, partidas_juego!inner(juego, jugada, confirmada)")
+  const { data } = await cli.from("partida_juego_jugadores").select("partida, lado, gano, partidas_juego!inner(juego, jugada, confirmada, restantes)")
     .eq("jugador", perfil.id).eq("partidas_juego.confirmada", true).order("partida", { ascending: false }).limit(limite);
-  return data || [];
+  const mias = data || [];
+  if (!mias.length) return mias;
+  try {
+    const { data: todos } = await cli.from("partida_juego_jugadores").select("partida, jugador, lado").in("partida", mias.map((x) => x.partida));
+    const nombres = await usuariosDe([...new Set((todos || []).map((x) => x.jugador))]);
+    for (const x of mias) x.rivales = (todos || []).filter((t) => t.partida === x.partida && t.lado !== x.lado).map((t) => nombres[t.jugador] || "?");
+  } catch { /* sin rivales: el historial igual se muestra */ }
+  return mias;
+}
+
+/** Mis partidas de truco confirmadas (las mismas tablas que usa el truco), para el «Vos» único de AZAR (2026-11-19). */
+export async function misPartidasTruco(limite = 60) {
+  if (!perfil) return [];
+  if (window.__NUBE_FALSA) return window.__NUBE_FALSA.misPartidasTruco ? window.__NUBE_FALSA.misPartidasTruco() : [];
+  const { data: mias } = await cli.from("partida_jugadores").select("partida, lado, gano, gloria").eq("jugador", perfil.id).limit(limite);
+  const ids = (mias || []).map((x) => x.partida);
+  if (!ids.length) return [];
+  const [{ data: partidas }, { data: todos }] = await Promise.all([
+    cli.from("partidas").select("id, tipo, jugada, puntos0, puntos1, clasificatoria").in("id", ids).eq("confirmada", true),
+    cli.from("partida_jugadores").select("partida, jugador, lado").in("partida", ids),
+  ]);
+  const nombres = await usuariosDe([...new Set((todos || []).map((x) => x.jugador))]);
+  const yo = Object.fromEntries((mias || []).map((x) => [x.partida, x]));
+  return (partidas || []).map((p) => ({
+    ...p, lado: yo[p.id].lado, gano: yo[p.id].gano, gloria: yo[p.id].gloria,
+    rivales: (todos || []).filter((x) => x.partida === p.id && x.lado !== yo[p.id].lado).map((x) => nombres[x.jugador] || "?"),
+  }));
+}
+
+async function usuariosDe(ids) {
+  if (!ids.length) return {};
+  const { data } = await cli.from("perfiles").select("id, usuario").in("id", ids);
+  return Object.fromEntries((data || []).map((p) => [p.id, p.usuario]));
 }
 
 // ---------- desafío del día de CHIN ----------

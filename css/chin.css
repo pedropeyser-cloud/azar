@@ -9,7 +9,7 @@
 .franja .cara-jugador { width: 100%; display: block; overflow: visible; }
 .quien { min-width: 0; flex: 1; }
 .quien span { display: block; font-weight: 700; font-size: 18px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.quien small { font-family: var(--fb); font-size: 10.5px; color: var(--gris); }
+.quien small { font-family: var(--fb); font-size: 11.5px; color: var(--gris); }
 .icono { background: none; border: 0; font-size: 20px; padding: 6px; opacity: .7; }
 
 /* cartas, mazos y pilas */
@@ -143,12 +143,12 @@
 .mano-fila .mano-slot[data-apil="2"] .carta { box-shadow: 3px -3px 0 0 #d8d0bd, 3px -3px 0 1px rgba(0,0,0,.35), 6px -6px 0 0 #cbc3af, 6px -6px 0 1px rgba(0,0,0,.35), 0 4px 10px rgba(0,0,0,.5); }
 .mano-fila .mano-slot[data-apil="3"] .carta { box-shadow: 3px -3px 0 0 #d8d0bd, 3px -3px 0 1px rgba(0,0,0,.35), 6px -6px 0 0 #cbc3af, 6px -6px 0 1px rgba(0,0,0,.35), 9px -9px 0 0 #bfb7a2, 9px -9px 0 1px rgba(0,0,0,.35), 0 4px 10px rgba(0,0,0,.5); }
 .cuantas { position: absolute; right: -6px; top: -10px; z-index: 3; background: var(--ambar); color: var(--tinta); font-family: var(--fb); font-size: 12px; font-weight: 700; padding: 1px 6px; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,.5); pointer-events: none; }
-.rival-fila .cuantas { font-size: 10px; padding: 0 4px; top: -7px; right: -5px; }
+.rival-fila .cuantas { font-size: 11px; padding: 0 4px; top: -7px; right: -5px; }
 
 /* cartas en poder de cada uno: siempre a la vista */
 .total { flex: none; display: grid; justify-items: center; line-height: .85; min-width: 52px; }
-.total b { font-family: var(--fd); font-weight: 700; font-size: clamp(34px, 9vw, 44px); color: var(--papel); font-variant-numeric: tabular-nums; }
-.total small { font-family: var(--fb); font-size: 10px; color: var(--gris); letter-spacing: .04em; }
+.total b { font-family: var(--fd); font-weight: 700; font-size: clamp(34px, 9vw, 44px); color: var(--papel); font-variant-numeric: lining-nums tabular-nums; }
+.total small { font-family: var(--fb); font-size: 11px; color: var(--gris); letter-spacing: .04em; }
 .total.poquitas b { color: var(--ambar); }
 .total.late b { animation: late .35s ease-out; }
 .total.sube b { animation: sube .6s ease-out; }
@@ -181,8 +181,8 @@
 /* marcador de la serie (aparece desde la primera revancha): en el celular arriba del paño; en la compu, al costado */
 .marcador { position: absolute; z-index: 5; left: 50%; top: 10px; transform: translateX(-50%); display: flex; align-items: center; gap: 8px;
   padding: 4px 14px 2px; border-radius: 999px; background: rgba(8,10,20,.78); border: 1px solid var(--linea); box-shadow: 0 6px 18px rgba(0,0,0,.45); pointer-events: none; }
-.marcador small { font-family: var(--fb); font-size: 9.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--gris); }
-.marcador b { font-family: var(--fd); font-weight: 700; font-size: 28px; line-height: 1; color: var(--papel); font-variant-numeric: tabular-nums; }
+.marcador small { font-family: var(--fb); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--gris); }
+.marcador b { font-family: var(--fd); font-weight: 700; font-size: 28px; line-height: 1; color: var(--papel); font-variant-numeric: lining-nums tabular-nums; }
 .marcador .m-yo { color: var(--ambar); }
 .marcador i { font-style: normal; color: var(--gris); }
 @media (min-width: 760px) {
@@ -245,7 +245,7 @@
 .burbuja.dicho { white-space: normal; width: max-content; max-width: min(240px, 62vw); font-size: 21px; line-height: 1.05; padding: 6px 12px 4px; text-align: left; }
 
 /* marcador al mejor de 3: visible desde el principio */
-.marcador .m-sub { font-family: var(--fb); font-size: 9.5px; color: var(--gris); }
+.marcador .m-sub { font-family: var(--fb); font-size: 11px; color: var(--gris); }
 .marcador .m-sub:empty { display: none; }
 
 /* pizarra de pulpería al terminar */
@@ -257,7 +257,7 @@
 .pizarra .fin-sub b { color: var(--ambar); }
 .fin-heroe { border-top: 1px dashed rgba(241,235,221,.25); border-bottom: 1px dashed rgba(241,235,221,.25); padding: 6px 0 8px; }
 .fin-ms { font-family: var(--fd); font-weight: 700; color: var(--papel); display: flex; align-items: baseline; justify-content: center; gap: 6px; line-height: .9; }
-.fin-ms b { font-size: clamp(64px, 19vw, 92px); font-variant-numeric: tabular-nums; }
+.fin-ms b { font-size: clamp(64px, 19vw, 92px); font-variant-numeric: lining-nums tabular-nums; }
 .fin-ms span { font-size: 30px; color: var(--texto-suave); }
 .fin-ms.vacio { font-size: 60px; color: var(--gris); }
 .fin-ms .record { font-style: normal; font-family: var(--fb); font-size: 12px; font-weight: 700; color: var(--tinta); background: var(--ambar); padding: 2px 8px; border-radius: 999px; align-self: center; }
@@ -266,7 +266,7 @@
 .fin-tabla th, .fin-tabla td { padding: 1px 6px; text-align: right; font-weight: 400; }
 .fin-tabla thead th { font-family: var(--fb); font-size: 11px; color: var(--gris); max-width: 90px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .fin-tabla tbody th { text-align: left; color: var(--texto-suave); }
-.fin-tabla td { font-weight: 700; font-variant-numeric: tabular-nums; }
+.fin-tabla td { font-weight: 700; font-variant-numeric: lining-nums tabular-nums; }
 .fin-ajustada { font-family: var(--fd); font-size: 21px; color: var(--texto-suave); }
 .fin-ajustada b { color: var(--ambar); }
 .pizarra .fin-botones { gap: 8px; margin-top: 4px; }
@@ -293,7 +293,7 @@
 .mesa.en-tutorial .franja.arriba { visibility: hidden; }
 
 /* 2026-11-16: salir en mitad de la partida (← arriba a la izquierda) y aviso de que el rival se fue */
-.franja .salir-btn { flex: none; font-size: 24px; line-height: 1; padding: 6px 8px 6px 0; opacity: .8; }
+.franja .salir-btn { flex: none; font-size: 24px; line-height: 1; padding: 6px 8px 6px 0; opacity: .8; min-width: 40px; min-height: 40px; text-align: left; }
 .franja .salir-btn:hover, .franja .salir-btn:focus-visible { opacity: 1; }
 .fin.dejar { z-index: 36; align-items: center; }
 .fin-titulo.chico { font-size: clamp(52px, 14vw, 72px); color: var(--papel); }

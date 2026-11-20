@@ -34,6 +34,7 @@ const FASE = {
   juega: { txt: "jugando", luna: `<circle cx="7" cy="7" r="6" fill="#E9B54A"/>` },
   on: { txt: "en AZAR", luna: `<circle cx="7" cy="7" r="6" fill="#C7CCE4"/><circle cx="10" cy="5" r="5" fill="#121629"/>` },
   rec: { txt: "pasó hoy", luna: `<circle cx="7" cy="7" r="5.4" fill="none" stroke="#8A90AE" stroke-width="1.2"/>` },
+  off: { txt: "hace rato", luna: `<circle cx="7" cy="7" r="5.4" fill="none" stroke="#565C7A" stroke-width="1.2" stroke-dasharray="1.6 1.8"/>` },
 };
 const fase = (e) => `<svg class="fase" viewBox="0 0 14 14" aria-hidden="true">${(FASE[e] || FASE.rec).luna}</svg>`;
 const luna = (nombre, e) => `<span class="luna">${esc(String(nombre || "?").slice(0, 1).toUpperCase())}${e ? fase(e) : ""}</span>`;
@@ -44,7 +45,7 @@ function saludoHora() {
 }
 
 export function montarLobby(app, { abrirJuego, tab: tabInicial = "jugar" }) {
-  let vos = tabInicial === "vos", aviso = "", cargando = false, partidas = null, confirmarBorrado = false;
+  let vos = tabInicial === "vos", aviso = "", cargando = false, partidas = null, partidasTruco = null, confirmarBorrado = false;
   let amigos = null, vivo = true, conectadosAntes = new Set(), sondeo = null;
 
   function toast(txt) { aviso = txt; pintarAviso(); setTimeout(() => { if (aviso === txt) { aviso = ""; pintarAviso(); } }, 3500); }
@@ -98,9 +99,48 @@ export function montarLobby(app, { abrirJuego, tab: tabInicial = "jugar" }) {
         + grupo("Pasaron hoy", amigos.filter((a) => a.estado === "rec")) + grupo("Sin conectarse hoy", amigos.filter((a) => a.estado === "off"));
     }
     return `<aside class="amigos" aria-label="Amigos"><h2>Amigos</h2><div class="amigos-lista">${cuerpo}</div>
-      <div class="leyenda"><span>${fase("juega")} jugando</span><span>${fase("on")} en AZAR</span><span>${fase("rec")} pasó hoy</span></div></aside>`;
+      <div class="leyenda"><span>${fase("juega")} jugando</span><span>${fase("on")} en AZAR</span><span>${fase("rec")} pasó hoy</span><span>${fase("off")} hace rato</span></div></aside>`;
   }
 
+
+  // ---------- «Vos» único (2026-11-19, Pedro: «unificá»): el perfil de toda la cuenta vive acá. Junta las partidas del
+  // truco y las de los otros juegos; la cara, lo que tenés puesto y los equipos se eligen en el truco (Tienda y Equipos).
+  const fecha = (iso) => { const d = iso ? new Date(iso) : null; return d && !isNaN(d) ? d.toLocaleDateString("es-AR", { day: "numeric", month: "short" }) : ""; };
+  function historialUnico() {
+    const truco = (partidasTruco || []).map((x) => ({ juego: "truco", gano: !!x.gano, cuando: x.jugada, rivales: x.rivales || [],
+      marcador: x.puntos0 != null ? `${x.lado === 0 ? x.puntos0 : x.puntos1} a ${x.lado === 0 ? x.puntos1 : x.puntos0}` : "", extra: x.gloria ? `+${x.gloria} de gloria` : "" }));
+    const otros = (partidas || []).map((x) => ({ juego: x.partidas_juego?.juego, gano: !!x.gano, cuando: x.partidas_juego?.jugada, rivales: x.rivales || [], marcador: "", extra: "" }));
+    return [...truco, ...otros].sort((a, b) => String(b.cuando || "").localeCompare(String(a.cuando || "")));
+  }
+  function perfilCompleto(p) {
+    const cargandoTodo = partidas === null || partidasTruco === null;
+    const lista = cargandoTodo ? [] : historialUnico();
+    const ganadas = lista.filter((x) => x.gano).length;
+    let racha = 0; for (const x of lista) { if (x.gano) racha++; else break; }
+    const porJuego = {};
+    for (const x of lista) { const k = (porJuego[x.juego] ||= { g: 0, p: 0 }); if (x.gano) k.g++; else k.p++; }
+    const cifra = (n, t, cl = "") => `<div class="${cl}"><b>${cargandoTodo ? "·" : n}</b><span>${t}</span></div>`;
+    const filas = lista.slice(0, 12).map((x) => {
+      const j = juegoPorId(x.juego);
+      return `<li class="${x.gano ? "gane" : "perdi"}"><span class="h-sello" aria-label="${x.gano ? "ganaste" : "perdiste"}">${x.gano ? "G" : "P"}</span>
+        <span class="h-medio"><b>${esc(j?.nombre || x.juego || "")}${x.rivales.length ? ` <i>contra ${esc(x.rivales.join(", "))}</i>` : ""}</b><small>${esc(fecha(x.cuando))}${x.extra ? ` · ${esc(x.extra)}` : ""}</small></span>
+        ${x.marcador ? `<span class="h-fin">${esc(x.marcador)}</span>` : ""}</li>`;
+    }).join("");
+    const titulo = p.titulo ? `<small class="p-titulo">${esc(p.titulo)}</small>` : "";
+    return `<div class="perfil-grande">${luna(p.usuario, "on")}<div><b class="p-nombre">${esc(p.usuario)}</b>${titulo}
+        <a class="chip-gloria-az" href="juegos/truco/?ir=pulperia">${Number(p.puntos) || 0} de gloria · Tienda ›</a></div></div>
+      <div class="cifras-az">${cifra(lista.length, "jugadas")}${cifra(ganadas, "ganadas", "g")}${cifra(lista.length - ganadas, "perdidas", "p")}${cifra(racha, "racha")}</div>
+      ${Object.keys(porJuego).length ? `<div class="por-juego">${Object.entries(porJuego).map(([k, v]) => `<span><b>${esc(juegoPorId(k)?.nombre || k)}</b> ${v.g}–${v.p}</span>`).join("")}</div>` : ""}
+      <h2>Tus partidas</h2>
+      ${cargandoTodo ? `<p class="nota">Cargando…</p>` : filas ? `<ul class="historial">${filas}</ul>` : `<p class="nota">Todavía no jugaste ninguna con un amigo.</p>`}
+      <p class="nota chica">Se anotan las partidas con alguien que también entró con su cuenta y confirmó el resultado. Las de los bots no. Los juegos de a varios (siete, culo sucio, Desconfío, generala) todavía no se guardan.</p>
+      <h2>Tu cara y tu mesa</h2>
+      <p class="nota">Tu cara, lo que tenés puesto y tus equipos se eligen en el truco, con la gloria.</p>
+      <div class="vos-links"><a class="btn sec" href="juegos/truco/?ir=pulperia">Tienda</a><a class="btn sec" href="juegos/truco/?ir=vos">Equipos del truco</a></div>
+      <div class="acciones"><button class="btn sec" data-accion="salir">Cerrar sesión</button>
+        ${confirmarBorrado ? `<div class="borrar"><p class="nota">Esto borra tu usuario, tu gloria y tu historial en todo AZAR, también en el truco. No se puede deshacer. Escribí tu usuario para confirmar:</p><input class="campo" id="confirmar" autocomplete="off" aria-label="Escribí tu usuario"><button class="btn peligro" data-accion="borrar-ok">Borrar mi cuenta</button><button class="btn suave" data-accion="borrar-no">No, volver</button></div>`
+          : `<button class="btn suave" data-accion="borrar">Borrar mi cuenta</button>`}</div>`;
+  }
   const legal = () => `<p class="legal"><a href="terminos.html" target="_blank" rel="noopener">Términos</a> · <a href="privacidad.html" target="_blank" rel="noopener">Privacidad</a></p>`;
   function panelVos() {
     const p = nube.miPerfil(), u = nube.miUsuario();
@@ -110,13 +150,7 @@ export function montarLobby(app, { abrirJuego, tab: tabInicial = "jugar" }) {
       <button class="btn prim" data-accion="google">Entrar con Google</button>`;
     else if (!p) c = `<h2>Elegí tu usuario</h2><p class="nota">De 3 a 16 letras o números, sin espacios. Es el que ven los demás.</p>
       <input class="campo" id="usuario" maxlength="16" autocomplete="off" aria-label="Usuario"><button class="btn prim" data-accion="crear">Crear usuario</button>`;
-    else c = `<div class="perfil-grande">${luna(p.usuario, "on")}<div><b class="p-nombre">${esc(p.usuario)}</b><small>${Number(p.puntos) || 0} de gloria en el truco</small></div></div>
-      <p class="nota">La gloria es solo del truco, y lo que se consigue con ella está en su Tienda. El Chin, la escoba y la canasta guardan en tu historial las partidas con un amigo cuando los dos confirman el resultado.</p>
-      <h2>Tus últimas partidas</h2>
-      ${partidas === null ? `<p class="nota">Cargando…</p>` : partidas.length ? `<ul class="historial">${partidas.slice(0, 8).map((x) => `<li class="${x.gano ? "gane" : "perdi"}"><b>${esc(juegoPorId(x.partidas_juego?.juego)?.nombre || x.partidas_juego?.juego || "")}</b> ${x.gano ? "ganaste" : "perdiste"}</li>`).join("")}</ul>` : `<p class="nota">Todavía no jugaste ninguna con un amigo.</p>`}
-      <div class="acciones"><button class="btn sec" data-accion="salir">Cerrar sesión</button>
-        ${confirmarBorrado ? `<div class="borrar"><p class="nota">Esto borra tu usuario, tu gloria y tu historial en todo AZAR, también en el truco. No se puede deshacer. Escribí tu usuario para confirmar:</p><input class="campo" id="confirmar" autocomplete="off" aria-label="Escribí tu usuario"><button class="btn peligro" data-accion="borrar-ok">Borrar mi cuenta</button><button class="btn suave" data-accion="borrar-no">No, volver</button></div>`
-          : `<button class="btn suave" data-accion="borrar">Borrar mi cuenta</button>`}</div>`;
+    else c = perfilCompleto(p);
     return `<section class="panel-vos" role="dialog" aria-label="Vos" ${vos ? "" : "hidden"}><button class="cerrar-vos" data-tab="jugar" aria-label="Cerrar">×</button>${c}${legal()}</section>`;
   }
 
@@ -151,11 +185,10 @@ export function montarLobby(app, { abrirJuego, tab: tabInicial = "jugar" }) {
     } catch { if (amigos === null) { amigos = []; pintarParte(".amigos", columnaAmigos()); } }
   }
   async function cargarPartidas() {
-    if (!nube.miPerfil()) { partidas = null; return; }
-    try {
-      const x = await nube.misPartidasJuego(12);
-      partidas = [...x].sort((a, b) => String(b.partidas_juego?.jugada || "").localeCompare(String(a.partidas_juego?.jugada || "")));
-    } catch { partidas = []; }
+    if (!nube.miPerfil()) { partidas = null; partidasTruco = null; return; }
+    const [x, t] = await Promise.all([nube.misPartidasJuego(20).catch(() => []), nube.misPartidasTruco(60).catch(() => [])]);
+    partidas = [...x].sort((a, b) => String(b.partidas_juego?.jugada || "").localeCompare(String(a.partidas_juego?.jugada || "")));
+    partidasTruco = t;
     if (vivo) pintar();
   }
 
@@ -192,7 +225,7 @@ export function montarLobby(app, { abrirJuego, tab: tabInicial = "jugar" }) {
       cargando = true;
       if (a === "google") await nube.entrarConGoogle();
       else if (a === "crear") await nube.crearPerfil(app.querySelector("#usuario").value);  // el historial lo trae el aviso de sesión
-      else if (a === "salir") { await nube.salir(); partidas = null; amigos = null; }
+      else if (a === "salir") { await nube.salir(); partidas = null; partidasTruco = null; amigos = null; }
       else if (a === "borrar") { confirmarBorrado = true; pintar(); }
       else if (a === "borrar-no") { confirmarBorrado = false; pintar(); }
       else if (a === "borrar-ok") {
@@ -207,7 +240,7 @@ export function montarLobby(app, { abrirJuego, tab: tabInicial = "jugar" }) {
   const alPantalla = () => { const b = app.querySelector('[data-accion="pantalla"]'); if (b) b.innerHTML = pantalla.iconoPantalla(); };
   document.addEventListener("fullscreenchange", alPantalla);
 
-  nube.on("sesion", () => { if (!vivo) return; amigos = null; partidas = null; pintar(); cargarAmigos(); cargarPartidas(); });
+  nube.on("sesion", () => { if (!vivo) return; amigos = null; partidas = null; partidasTruco = null; pintar(); cargarAmigos(); cargarPartidas(); });
   pintar();
   abrirCielo();
   cargarAmigos(); cargarPartidas();

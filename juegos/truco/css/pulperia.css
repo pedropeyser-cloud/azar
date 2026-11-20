@@ -260,7 +260,7 @@ section.conectados .vacio { min-height: 0; padding: 4px 0 10px; }
 .cifras4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
 .cifras4 > div { padding: 10px 4px 8px; text-align: center; border-radius: 14px; background: var(--superficie); border: 1px solid var(--linea); }
 .cifras4 b { display: block; font-size: 26px; font-weight: 800; line-height: 1.1; }
-.cifras4 span { font: 10.5px var(--fb); color: var(--gris); }
+.cifras4 span { font: 11px var(--fb); color: var(--gris); }
 .cifras4 .g b { color: #8fd28f; } .cifras4 .p b { color: var(--mal); }
 .racha { align-self: center; padding: 6px 14px; border-radius: 99px; font-size: 14px; font-weight: 600; }
 .racha.gana { background: rgba(111,191,115,.15); color: #9fdc9f; border: 1px solid rgba(111,191,115,.45); }
@@ -305,7 +305,7 @@ section.conectados .vacio { min-height: 0; padding: 4px 0 10px; }
 .slot-ilus { flex: none; width: 46px; height: 46px; display: grid; place-items: center; border-radius: 10px; background: radial-gradient(circle, rgba(233,181,74,.18), transparent 70%); }
 .slot.vacio .slot-ilus .ilus { filter: grayscale(1) brightness(.5); }
 .slot-t { min-width: 0; display: flex; flex-direction: column; }
-.slot-t small { font: 10.5px var(--fb); color: var(--gris); }
+.slot-t small { font: 11px var(--fb); color: var(--gris); }
 .slot-t b { font-size: 14px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .slot.vacio .slot-t b { color: var(--gris); font-weight: 400; }
 .estilo-juego { display: block; width: 100%; text-align: left; padding: 12px 14px; border-radius: 14px; background: var(--superficie); border: 1px solid var(--linea); color: var(--papel); }
@@ -336,7 +336,7 @@ section.conectados .vacio { min-height: 0; padding: 4px 0 10px; }
 .escudo.apagado { filter: grayscale(1) brightness(.45); }
 .escalera { list-style: none; padding: 4px 2px; display: flex; justify-content: space-between; align-items: flex-end; gap: 2px; }
 .escalera li { display: flex; flex-direction: column; align-items: center; gap: 4px; min-width: 0; }
-.escalera li span { font: 10px var(--fb); color: var(--gris); white-space: nowrap; }
+.escalera li span { font: 11px var(--fb); color: var(--gris); white-space: nowrap; }
 .escalera li:not(.actual) span { display: none; }
 .escalera li.actual span { color: var(--ambar); font-weight: 600; }
 .liga-cerrada { position: relative; display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center; padding: 24px 18px; border-radius: 18px; background: var(--superficie); border: 1px solid var(--linea); }
@@ -386,3 +386,11 @@ section.conectados .vacio { min-height: 0; padding: 4px 0 10px; }
   .inicio > .vista:not(#vista-jugar) { max-width: 860px; padding-top: 92px; }
   .inicio > .vista.ancha { max-width: 1240px; }
 }
+
+/* 2026-11-19: el perfil único vive en AZAR; la pestaña del truco queda para los equipos */
+a.cab-yo { color: inherit; text-decoration: none; }
+.ir-azar-vos { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 12px 14px; margin-bottom: 18px; border-radius: 16px;
+  border: 1px solid rgba(233,181,74,.4); background: rgba(233,181,74,.06); color: inherit; text-decoration: none; }
+.ir-azar-vos b { display: block; font-size: 16px; } .ir-azar-vos small { color: var(--texto-suave, #9aa0b8); font-size: 13px; }
+.ir-azar-vos i { font-style: normal; font-size: 24px; color: var(--ambar); }
+.ir-azar-vos:hover { border-color: var(--ambar); }

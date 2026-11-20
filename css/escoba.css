@@ -4,9 +4,9 @@
   --tw: clamp(46px, min(16.5vw, 10.6dvh), 104px);    /* cartas de la mesa */
   --mw: clamp(38px, min(11vw, 7dvh), 66px);          /* montones y mazo */
 }
-.escoba .franja .puntos { flex: none; display: grid; justify-items: center; line-height: .82; min-width: 46px; }
-.escoba .puntos b { font-family: var(--fd); font-weight: 700; font-size: clamp(36px, 9.5vw, 48px); color: var(--papel); font-variant-numeric: tabular-nums; }
-.escoba .puntos small { font-family: var(--fb); font-size: 10px; color: var(--gris); }
+.escoba .franja .puntos { flex: none; display: grid; justify-items: center; gap: 3px; line-height: .9; min-width: 46px; }
+.escoba .puntos b { font-family: var(--fd); font-weight: 700; font-size: clamp(36px, 9.5vw, 48px); color: var(--papel); font-variant-numeric: lining-nums tabular-nums; }
+.escoba .puntos small { font-family: var(--fb); font-size: 11px; color: var(--gris); }
 .escoba .puntos.cerca b { color: var(--ambar); }
 .escoba .mios-puntos b { color: var(--ambar); }
 .escoba .cara-slot.turno::after { content: ""; position: absolute; inset: -5px; border-radius: 50%; border: 2px solid var(--ambar); box-shadow: 0 0 16px 3px rgba(233,181,74,.45); animation: pide 1.3s ease-in-out infinite; pointer-events: none; }
@@ -22,7 +22,7 @@
 .escoba .pila-dorsos .c2 { transform: translate(2px, -2px); }
 .escoba .monton > b, .escoba .mazo-chico > b { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); z-index: 3; font-family: var(--fd); font-weight: 700; font-size: clamp(22px, 3.4dvh, 32px); color: var(--ambar); text-shadow: 0 2px 6px #000; pointer-events: none; }
 .escoba .monton.vacio .pila-dorsos, .escoba .mazo-chico.vacio .pila-dorsos { opacity: .18; }
-.escoba .mazo-chico small { position: absolute; left: 0; right: 0; top: 100%; text-align: center; font-family: var(--fb); font-size: 9.5px; color: var(--gris); margin-top: 2px; }
+.escoba .mazo-chico small { position: absolute; left: 0; right: 0; top: 100%; text-align: center; font-family: var(--fb); font-size: 11px; color: var(--gris); margin-top: 2px; }
 /* las escobas: boca arriba y cruzadas debajo del montón, asoman a los costados */
 .escoba .cruces { position: absolute; inset: 0; z-index: 0; }
 .escoba .cruz { position: absolute; left: 0; top: 0; width: 100%; aspect-ratio: 600/860; border-radius: 6px; overflow: hidden; box-shadow: 0 2px 6px rgba(0,0,0,.5);
@@ -130,6 +130,7 @@
 .de4 .tanteo .rival-puntos b { color: var(--ellos); }
 .de4 .tanteo .mios-puntos b { color: var(--ambar); }
 .de4 .tanteo em { font-style: normal; color: var(--gris); }
+.de4 .tanteo small { font-size: 11px; }
 .de4 .fila-bordes { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 0 16px; position: relative; z-index: 2; min-height: calc(var(--mw) * 1.43 + 6px); }
 .de4 .fila-bordes .ronda { font-family: var(--fd); font-weight: 700; font-size: 16px; color: rgba(241,235,221,.38); white-space: nowrap; transform: translateY(-10px); }
 .de4 .rival-monton > b { color: var(--ellos); }
@@ -144,7 +145,7 @@
 .de4 .as-quien { display: grid; justify-items: center; line-height: 1.05; text-align: center; }
 .de4 .as-quien b { font-size: 12px; font-weight: 700; max-width: 70px; overflow: hidden; text-overflow: ellipsis; text-shadow: 0 1px 4px #000; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
 .de4 .as-n .as-quien b { max-width: 130px; -webkit-line-clamp: 1; }
-.de4 .as-quien small { font-family: var(--fb); font-size: 9.5px; color: var(--gris); }
+.de4 .as-quien small { font-family: var(--fb); font-size: 11px; color: var(--gris); }
 .de4 .mano-dorsos { display: flex; justify-content: center; min-height: 10px; }
 .de4 .mano-dorsos .dorso-chico { width: calc(var(--cw4) * .44); margin: 0 -3px; box-shadow: 0 2px 5px rgba(0,0,0,.5); }
 .de4 .mano-dorsos .dorso-chico:nth-child(1) { transform: rotate(-8deg); } .de4 .mano-dorsos .dorso-chico:nth-child(3) { transform: rotate(8deg); }
@@ -153,10 +154,12 @@
 .de4 .as-n .as-quien b { color: var(--ambar); }
 .de4 .as-o { left: -8px; top: 40%; flex-direction: column; }
 .de4 .as-e { right: -8px; top: 40%; flex-direction: column; }
+/* 2026-11-19: en el celular las caras de los costados quedaban medio afuera de la pantalla */
+@media (max-width: 600px) { .de4 .as-o { left: 0; } .de4 .as-e { right: 0; } }
 /* los globos de cada asiento salen hacia el centro del paño */
 .de4 .as-n .burbuja { left: 50%; top: 100%; transform-origin: top center; }
-.de4 .as-o .burbuja { left: 70%; top: 70%; }
-.de4 .as-e .burbuja { right: 70%; top: 70%; }
+.de4 .as-o .burbuja { left: 70%; top: 70%; white-space: normal; width: max-content; max-width: min(220px, 56vw); }
+.de4 .as-e .burbuja { left: auto; right: 70%; top: 70%; white-space: normal; width: max-content; max-width: min(220px, 56vw); }
 .de4 .soplo-btn { top: auto; bottom: 54px; right: 50%; transform: translateX(50%); }
 .de4 .soplo-btn:active { transform: translateX(50%) scale(.96); }
 .de4 .tiza { top: 30px; }
@@ -171,12 +174,12 @@
 /* menú: de a 2 / de a 4, y el compañero de a 4 */
 .escoba-menu .modo-escoba { display: flex; gap: 8px; width: 100%; padding: 4px; border-radius: 18px; background: rgba(0,0,0,.25); border: 1px solid var(--linea); }
 .escoba-menu .modo { flex: 1; min-height: 52px; border: 0; border-radius: 14px; background: none; display: grid; justify-items: center; align-content: center; gap: 1px; color: var(--texto-suave, var(--gris)); }
-.escoba-menu .modo b { font-size: 17px; } .escoba-menu .modo small { font-family: var(--fb); font-size: 10.5px; color: var(--gris); }
+.escoba-menu .modo b { font-size: 17px; } .escoba-menu .modo small { font-family: var(--fb); font-size: 11.5px; color: var(--gris); }
 .escoba-menu .modo[aria-checked=true] { background: var(--ambar); color: var(--tinta); } .escoba-menu .modo[aria-checked=true] small { color: rgba(10,12,22,.7); }
 .escoba-menu .de2, .escoba-menu .de4 { display: contents; }
 .escoba-menu .de2[hidden], .escoba-menu .de4[hidden] { display: none; }
 .inicio .socio { flex: 1; min-height: 76px; padding: 8px 6px; border-radius: 16px; border: 1px solid var(--linea); background: var(--superficie); display: flex; flex-direction: column; gap: 3px; align-items: center; justify-content: center; text-align: center; }
-.inicio .socio b { font-size: 15px; } .inicio .socio small { font-family: var(--fb); font-size: 9.5px; line-height: 1.3; color: var(--gris); }
+.inicio .socio b { font-size: 15px; } .inicio .socio small { font-family: var(--fb); font-size: 11px; line-height: 1.3; color: var(--gris); }
 .inicio .socio[aria-pressed=true] { border-color: var(--ambar); background: rgba(233,181,74,.1); } .inicio .socio[aria-pressed=true] b { color: var(--ambar); }
 
 /* sala de espera de a 4: las sillas en cruz, como en la mesa */
@@ -188,7 +191,7 @@
 .sala4 { position: relative; display: grid; grid-template-columns: 1fr 1fr; grid-template-areas: "n n" "o e" "s s"; gap: 10px; width: 100%; max-width: 420px; margin: 0 auto; }
 .sala4 .silla { display: grid; justify-items: center; gap: 2px; padding: 10px 8px; border-radius: 16px; border: 1px solid var(--linea); background: var(--superficie); text-align: center; cursor: pointer; }
 .sala4 .s2 { grid-area: n; width: min(220px, 100%); justify-self: center; } .sala4 .s3 { grid-area: o; } .sala4 .s1 { grid-area: e; } .sala4 .s0 { grid-area: s; width: min(220px, 100%); justify-self: center; cursor: default; }
-.sala4 .silla small { font-family: var(--fb); font-size: 10px; color: var(--gris); text-transform: uppercase; letter-spacing: .06em; }
+.sala4 .silla small { font-family: var(--fb); font-size: 11px; color: var(--gris); text-transform: uppercase; letter-spacing: .06em; }
 .sala4 .silla b { font-size: 17px; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .sala4 .silla i { font-style: normal; font-family: var(--fd); font-size: 18px; color: var(--ambar); }
 .sala4 .silla.bot i { color: var(--gris); }

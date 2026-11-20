@@ -31,7 +31,7 @@ export function montarMesa(cont, { fuente, salir, otraMesa }) {
       const est = !enMano(j) ? "sin porotos"
         : v.paso[j] ? `se pasó · ${mostrar(total(cs.filter(Boolean)))}`
         : v.plantado[j] ? "se plantó"
-        : v.turno === j && (v.fase === "turnos" || v.fase === "banca") ? "pensando…"
+        : v.turno === j && (v.fase === "turnos" || v.fase === "banca") ? (j === yo ? "te toca" : "pensando…")
         : v.fase === "apuesta" && j !== v.banca && v.apuesta[j] === null && v.porotos[j] > 0 ? "apostando…" : "";
       ext.innerHTML = `${j === v.banca ? `<span class="tag-banca">banca</span>` : ""}${porotos(v.porotos[j])}`
         + `${v.apuesta[j] ? `<span class="apuesta" title="Apostó ${v.apuesta[j]}">apostó ${v.apuesta[j]}</span>` : ""}`
