@@ -44,5 +44,10 @@ export const JUEGOS = [
     descripcion: "Cinco dados y tres tiros: escalera, full, póker y generala. La servida gana en el acto.",
     abrir: () => import("../juegos/generala/flujo.js"),
   },
+  {
+    id: "chinchon", nombre: "Chinchón", jugadores: [2, 6], cuantos: "de 2 a 6", estado: "listo", palo: "chinchon", lema: "cortá con 5",
+    descripcion: "Levantá, tirá y armá juegos. Cortá con 5 o menos; siete seguidas del mismo palo ganan en el acto.",
+    abrir: () => import("../juegos/chinchon/flujo.js"),
+  },
 ];
 export const juegoPorId = (id) => JUEGOS.find((j) => j.id === id) || null;

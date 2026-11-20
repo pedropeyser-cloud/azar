@@ -142,6 +142,16 @@
   .azar .baraja .signo { top: 27%; width: 38%; }
 }
 @media (min-width: 900px) and (max-width: 1600px) { .azar .baraja.vacia { display: none; } }
+/* 2026-11-20: con nueve barajas (chinchón) tienen que entrar en una fila también en 1366: menos aire entre ellas, sin
+   la baraja vacía y el nombre un poco más chico (ninguno se corta: lo mide probar_chinchon_ui) */
+@media (min-width: 900px) {
+  .azar .barajas { gap: clamp(8px, .9vw, 20px); }
+  .azar .baraja { min-width: 92px; padding: clamp(9px, .75vw, 16px); }
+  .azar .baraja b { font-size: clamp(17px, 1.32vw, 28px); }
+  .azar .baraja small, .azar .baraja .vivo { font-size: 11.5px; }
+  .azar .baraja.vacia { display: none; }
+}
+@media (min-width: 1250px) { .azar .barajas { flex-wrap: nowrap; } .azar .baraja { min-width: 0; } }
 
 /* ---------- celular y ventanas angostas ---------- */
 @media (max-width: 899px) {

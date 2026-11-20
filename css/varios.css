@@ -275,65 +275,6 @@ body.con-mesa-n .btn-pantalla { display: none; }
   .vidas-dc i { width: 10px; height: 10px; }
 }
 
-/* ---------- generala (2026-11-19: los dados «Eclipse» del desconfío, la bandeja y la planilla) ---------- */
-.generala { --dado: clamp(42px, min(11vw, 7.6dvh), 74px); }
-.generala .dado { display: block; width: var(--dado); height: var(--dado); flex: none; }
-.generala .mi-zona { display: none; }
-.generala .centro-n { place-items: stretch; overflow-y: auto; overscroll-behavior: contain; padding: 4px max(12px, env(safe-area-inset-right)) 6px max(12px, env(safe-area-inset-left)); }
-.mesa-g { display: grid; grid-template-columns: minmax(0, auto) minmax(0, auto); align-items: center; justify-content: center; gap: clamp(16px, 3vw, 56px); min-height: 100%; }
-.bandeja-g { display: grid; justify-items: center; align-content: center; gap: clamp(6px, 1.4dvh, 14px); min-width: min(100%, clamp(420px, 34vw, 640px)); padding: clamp(10px, 2dvh, 22px) clamp(10px, 2vw, 26px); border-radius: 24px; border: 1px solid var(--linea); background: rgba(10,12,22,.55); }
-.bandeja-g.mia { border-color: rgba(233,181,74,.5); box-shadow: var(--glow); }
-.quien-g { margin: 0; font: 600 clamp(20px, 2vw, 30px) var(--fd); color: var(--papel); text-align: center; }
-.tiro-g { display: flex; align-items: center; justify-content: center; gap: clamp(10px, 2vw, 24px); flex-wrap: wrap; }
-.cubo-g { background: none; border: 0; padding: 0; border-radius: 16px; flex: none; display: block; }
-.cubo-g .cubilete { display: block; width: clamp(58px, min(12vw, 10dvh), 100px); height: auto; aspect-ratio: 100 / 110; transition: filter .2s; }
-button.cubo-g { cursor: pointer; }
-button.cubo-g:not(:disabled) .cubilete { animation: llamar-dc 2.4s ease-in-out infinite; }
-button.cubo-g:not(:disabled):hover .cubilete { filter: brightness(1.2) drop-shadow(0 0 10px rgba(233,181,74,.35)); }
-button.cubo-g:disabled { cursor: default; opacity: .45; }
-button.cubo-g:focus-visible { outline: 2px solid var(--ambar); outline-offset: 4px; }
-.cubo-g.ajeno { opacity: .7; }
-.cubo-g.sacude .cubilete { animation: sacudir-dc .3s ease-in-out 2 !important; transform-origin: 50% 90%; }
-.dados-g { display: flex; gap: clamp(6px, 1vw, 12px); justify-content: center; align-items: flex-end; min-height: calc(var(--dado) + 12px); }
-.dados-g.chicos { min-height: 0; gap: 4px; }
-.dados-g.chicos .dado { width: clamp(22px, 2.4vw, 32px); height: clamp(22px, 2.4vw, 32px); opacity: .85; }
-.dado-g { display: block; padding: 0; border: 0; background: none; border-radius: 22%; transition: transform .2s; }
-button.dado-g { cursor: pointer; }
-button.dado-g:focus-visible { outline: 2px solid var(--ambar); outline-offset: 3px; }
-.dado-g.guardado { transform: translateY(-12px); }
-.dado-g.guardado .dado { filter: drop-shadow(0 0 7px rgba(233,181,74,.75)); }
-.dado-g.guardado::after { content: ""; display: block; height: 3px; margin: 5px 18% 0; border-radius: 3px; background: var(--ambar); }
-.dado-g.rueda .dado { animation: rodar-g .5s cubic-bezier(.2,.8,.3,1) both; animation-delay: calc(var(--i) * .05s); }
-@keyframes rodar-g { 0% { opacity: 0; transform: translate(-30px, -22px) rotate(-200deg) scale(.8); } 70% { opacity: 1; transform: translate(3px, 2px) rotate(12deg); } 100% { transform: none; } }
-.toca-g { color: var(--texto-suave); font-size: 15px; align-self: center; }
-.antes-g { margin: 0; color: var(--texto-suave); font-size: 14px; text-align: center; }
-.antes-g b { color: var(--ambar); }
-.ayuda-g { margin: 0; color: var(--texto-suave); font-size: 13.5px; text-align: center; max-width: 46ch; }
-.ayuda-g:empty { display: none; }
-
-.planilla-g { border-collapse: separate; border-spacing: 0; font-variant-numeric: lining-nums tabular-nums; background: rgba(241,235,221,.04); border: 1px solid var(--linea); border-radius: 16px; overflow: hidden; align-self: center; }
-.planilla-g th, .planilla-g td { height: clamp(22px, 3.6dvh, 42px); padding: 0 clamp(6px, .9vw, 16px); text-align: center; border-bottom: 1px solid rgba(199,204,228,.1); font-size: clamp(13px, 1.15vw, 20px); }
-.planilla-g thead th { font-weight: 600; color: var(--texto-suave); font-size: clamp(12.5px, .95vw, 16px); height: clamp(26px, 3.6dvh, 36px); }
-.planilla-g thead th span { display: block; max-width: 9ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-inline: auto; }
-.planilla-g thead th.tipo-g { color: var(--ambar); text-align: left; font-family: var(--fd); font-size: 16px; }
-.planilla-g tbody th { text-align: left; font-weight: 600; color: var(--papel); white-space: nowrap; }
-.planilla-g td { min-width: clamp(34px, 4.4vw, 86px); color: var(--papel); font-weight: 700; }
-.planilla-g .yo { background: rgba(233,181,74,.07); }
-.planilla-g thead .yo { color: var(--ambar); }
-.planilla-g .turno { box-shadow: inset 1px 0 0 rgba(233,181,74,.45), inset -1px 0 0 rgba(233,181,74,.45); }
-.planilla-g td.cruz { color: var(--gris); font-weight: 400; }
-.planilla-g td.recien { animation: recien-g 2.6s ease-out both; }
-@keyframes recien-g { 0%, 40% { background: rgba(233,181,74,.4); color: var(--tinta); } 100% { background: transparent; } }
-.planilla-g .total-g th, .planilla-g .total-g td { border-bottom: 0; border-top: 1px solid var(--linea); font: 700 clamp(16px, 1.4vw, 20px) var(--fd); color: var(--ambar); }
-.anotar-g { width: 100%; min-width: 34px; height: calc(100% - 4px); min-height: 22px; padding: 0 4px; border-radius: 8px; border: 1px dashed var(--ambar); background: rgba(233,181,74,.14); color: var(--ambar); font-family: var(--fb); font-weight: 700; font-size: inherit; cursor: pointer; }
-.anotar-g:hover, .anotar-g:focus-visible { background: var(--ambar); color: var(--tinta); outline: none; }
-.anotar-g.cero { border-color: rgba(199,204,228,.3); background: none; color: var(--gris); font-weight: 400; }
-.anotar-g.cero:hover, .anotar-g.cero:focus-visible, .anotar-g.por-tachar { background: var(--brasa); border-color: var(--brasa); color: var(--tinta); }
-.generala .pts-g { font-weight: 700; color: var(--papel); }
-.generala .tirando-g { font-size: 12px; color: var(--ambar); font-style: italic; }
-.generala .grito-n { white-space: normal; width: max-content; max-width: calc(100vw - 32px); line-height: 1; }
-.generala .controles-n .si-tachar { background: var(--brasa); border-color: var(--brasa); color: var(--tinta); }
-
 /* la elección de la planilla en el menú (nucleo/flujo-n.js, «elecciones») */
 .elecciones-n { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
 .eleccion { flex: 1 1 150px; max-width: 230px; display: grid; gap: 2px; padding: 10px 12px; border-radius: 14px; border: 1px solid var(--linea); background: var(--superficie); color: var(--papel); text-align: center; cursor: pointer; }
@@ -343,31 +284,6 @@ button.dado-g:focus-visible { outline: 2px solid var(--ambar); outline-offset: 3
 .eleccion[aria-checked="true"] b { color: var(--ambar); }
 .eleccion:focus-visible { outline: 2px solid var(--ambar); outline-offset: 2px; }
 
-@media (max-width: 900px) {
-  .bandeja-g { min-width: 0; }
-  .mesa-g { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, auto); align-content: center; gap: 10px; }
-  .planilla-g { justify-self: center; width: min(100%, 520px); }
-  .bandeja-g { padding: 8px 10px; }
-  .quien-g { font-size: 19px; }
-  .generala .mi-pie { padding: 6px 10px; }
-  .generala .mi-pie:has(.si-tachar) { flex-wrap: wrap; }
-  .generala .mi-pie:has(.si-tachar) .controles-n { flex-basis: 100%; justify-content: center; }
-  .generala .ctrl-nota { font-size: 13px; }
-  .generala { --dado: clamp(36px, min(11vw, 6.4dvh), 60px); }
-  .generala .cubo-g .cubilete { width: clamp(44px, min(11vw, 7.4dvh), 70px); }
-  .dado-g.guardado { transform: translateY(-8px); }
-  .dado-g.guardado::after { margin-top: 3px; }
-  .ayuda-g { font-size: 12.5px; }
-  .planilla-g th, .planilla-g td { height: clamp(20px, 2.9dvh, 30px); }
-  .planilla-g thead th { height: clamp(22px, 3.1dvh, 32px); }
-  .anotar-g { min-height: 18px; }
-  .generala .controles-n .boton { min-height: 44px; font-size: 16px; }
-}
-@media (max-width: 900px) and (max-height: 760px) { .antes-g, .dados-g.chicos { display: none; } }
 @media (max-width: 420px) {
-  .planilla-g th, .planilla-g td { padding: 0 3px; font-size: 13px; }
-  .planilla-g td { min-width: 0; }
-  .planilla-g[data-n="5"] thead th span, .planilla-g[data-n="6"] thead th span { max-width: 5ch; }
-  .anotar-g { min-width: 28px; }
   .eleccion { flex-basis: 100%; max-width: none; }
 }

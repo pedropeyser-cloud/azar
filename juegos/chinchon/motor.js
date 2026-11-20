@@ -162,7 +162,7 @@ export function cuentaAjena(mano, juegosCorte) {
 
 // ---------- la partida ----------
 /** Opciones: { jugadores (2 a 6), nombres, semilla, ahora, reparte (asiento), pausaRecuento = 7000, pausaReenganche = 14000, mazo } */
-export function nuevaPartida({ jugadores = 2, nombres, semilla, ahora = 0, reparte, pausaRecuento = 7000, pausaReenganche = 14000, mazo } = {}) {
+export function nuevaPartida({ jugadores = 2, nombres, semilla, ahora = 0, reparte, pausaRecuento = 7000, pausaReenganche = 14000, mazo, ritmo = 1 } = {}) {
   const n = Math.max(2, Math.min(6, jugadores | 0));
   let azar = (semilla ?? Math.floor(Math.random() * 2 ** 31)) >>> 0;
   let r; [azar, r] = paso(azar);
@@ -171,7 +171,7 @@ export function nuevaPartida({ jugadores = 2, nombres, semilla, ahora = 0, repar
     azar, puntos: Array(n).fill(0), fuera: [], reenganches: Array(n).fill(0),
     reparte: Number.isInteger(reparte) ? reparte % n : Math.floor(r * n), mano: 0,
     manos: [], mazo: [], pozo: [], turno: null, fase: "robar", levanto: null, turnoDesde: ahora,
-    recuento: null, pausaRecuento, pausaReenganche, ganador: null, chinchon: null, seq: 0, mazoFijo: mazo || null,
+    recuento: null, pausaRecuento, pausaReenganche, ritmo: Math.min(1, Math.max(0.05, Number(ritmo) || 1)), ganador: null, chinchon: null, seq: 0, mazoFijo: mazo || null,
   };
   const ev = [];
   repartir(e, ahora, ev);

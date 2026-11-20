@@ -1,10 +1,11 @@
 /* Mesa de la GENERALA (2026-11-19): dirección A «Horizonte» con los dados sueltos de la C (htmls/generala-direcciones.html).
    Arriba el cielo con la planilla en constelaciones; abajo el mostrador con la franja de luz y el paño donde caen los
-   dados. Todo bajo .generala y con clases gx- (las viejas -g de css/varios.css quedan sin uso). Probado en 1920, 1366 y 390. */
+   dados. Todo bajo .generala y con clases gx- (las viejas -g de css/varios.css se borraron el 2026-11-20). Probado en 1920, 1366 y 390. */
 
 /* el arco de caras y tu pie no van: cada uno está en la planilla con su cara */
 .generala .rivales-n, .generala .yo-n { display: none; }
-.generala .centro-n { grid-row: 3; display: block; overflow: hidden; padding: 0; min-height: 0; }
+/* place-items: stretch: el center de .centro-n (varios.css) achicaba la mesa al ancho de su contenido en el Chrome nuevo (2026-11-20) */
+.generala .centro-n { grid-row: 3; display: block; place-items: stretch; overflow: hidden; padding: 0; min-height: 0; }
 .generala .grito-n { white-space: normal; width: max-content; max-width: calc(100vw - 32px); line-height: 1; top: 40%; }
 
 .gx-mesa { position: relative; height: 100%; display: grid; grid-template-rows: auto minmax(0, 1fr); }

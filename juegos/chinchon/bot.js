@@ -135,6 +135,6 @@ export function bot(e, j, ahora, dif = "rapido") {
     return { t: "reenganche", si: dif !== "implacable" || conQue <= 85 };
   }
   if (e.turno !== j) return null;
-  if (ahora - e.turnoDesde < entre(DEMORA[dif] || DEMORA.rapido, azarFijo(e, j, 8))) return null;
+  if (ahora - e.turnoDesde < entre(DEMORA[dif] || DEMORA.rapido, azarFijo(e, j, 8)) * (e.ritmo ?? 1)) return null;   // ritmo < 1 solo en las pruebas
   return e.fase === "robar" ? robar(e, j, dif) : tirarOCortar(e, j, dif);
 }

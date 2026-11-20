@@ -23,6 +23,8 @@ const PALO = {
   culo: `<rect x="16" y="14" width="22" height="32" rx="3"/><rect x="27" y="20" width="22" height="32" rx="3" transform="rotate(12 38 36)"/>`,
   dado: `<rect x="15" y="15" width="34" height="34" rx="7"/><circle cx="24" cy="24" r="2.4"/><circle cx="32" cy="32" r="2.4"/><circle cx="40" cy="40" r="2.4"/>`,
   // generala: una planilla con renglones y un dado del cinco apoyado encima
+  // chinchón: tres cartas seguidas en abanico y, en la del medio, el sol tapado del comodín
+  chinchon: `<rect x="10" y="16" width="20" height="30" rx="3" transform="rotate(-14 20 46)"/><rect x="34" y="16" width="20" height="30" rx="3" transform="rotate(14 44 46)"/><rect x="22" y="10" width="20" height="30" rx="3"/><circle cx="32" cy="25" r="5"/><circle cx="32" cy="25" r="7.6" stroke-dasharray="2 2.2"/>`,
   planilla: `<rect x="12" y="8" width="30" height="44" rx="3"/><path d="M17 17h20M17 24h20M17 31h12"/><rect x="30" y="34" width="22" height="22" rx="5" transform="rotate(-10 41 45)"/><circle cx="36" cy="40" r="1.8"/><circle cx="46" cy="38.4" r="1.8"/><circle cx="41" cy="45" r="1.8"/><circle cx="36.2" cy="51.4" r="1.8"/><circle cx="46.4" cy="49.6" r="1.8"/>`,
 };
 const signo = (p) => `<svg class="signo" viewBox="0 0 64 64" aria-hidden="true">${PALO[p] || PALO.oro}</svg>`;
@@ -133,7 +135,7 @@ export function montarLobby(app, { abrirJuego, tab: tabInicial = "jugar" }) {
       ${Object.keys(porJuego).length ? `<div class="por-juego">${Object.entries(porJuego).map(([k, v]) => `<span><b>${esc(juegoPorId(k)?.nombre || k)}</b> ${v.g}–${v.p}</span>`).join("")}</div>` : ""}
       <h2>Tus partidas</h2>
       ${cargandoTodo ? `<p class="nota">Cargando…</p>` : filas ? `<ul class="historial">${filas}</ul>` : `<p class="nota">Todavía no jugaste ninguna con un amigo.</p>`}
-      <p class="nota chica">Se anotan las partidas con alguien que también entró con su cuenta y confirmó el resultado. Las de los bots no. Los juegos de a varios (siete, culo sucio, Desconfío, generala) todavía no se guardan.</p>
+      <p class="nota chica">Se anotan las partidas con alguien que también entró con su cuenta y confirmó el resultado. Las de los bots no. Los juegos de a varios (siete, culo sucio, Desconfío, generala, chinchón) todavía no se guardan.</p>
       <h2>Tu cara y tu mesa</h2>
       <p class="nota">Tu cara, lo que tenés puesto y tus equipos se eligen en el truco, con la gloria.</p>
       <div class="vos-links"><a class="btn sec" href="juegos/truco/?ir=pulperia">Tienda</a><a class="btn sec" href="juegos/truco/?ir=vos">Equipos del truco</a></div>
